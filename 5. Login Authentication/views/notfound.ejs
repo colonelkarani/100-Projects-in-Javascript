@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>User Already Exists</title>
+  <style>
+    /* Reset some default styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body, html {
+      height: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      max-width: 450px;
+      width: 100%;
+      padding: 40px 30px;
+      text-align: center;
+      position: relative;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    /* Animated icon container */
+    .icon {
+      background: #fff;
+      color: #764ba2;
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 3rem;
+      box-shadow: 0 4px 15px rgba(118, 75, 162, 0.5);
+      animation: bounce 2s infinite;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      line-height: 1.5;
+      color: #e0d7f5;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    /* Button styles */
+    .btn {
+      background: #764ba2;
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 15px rgba(118, 75, 162, 0.4);
+      transition: background 0.3s ease, transform 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+      user-select: none;
+    }
+
+    .btn:hover {
+      background: #5a357a;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 20px rgba(90, 53, 122, 0.6);
+    }
+
+    .btn:active {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 10px rgba(90, 53, 122, 0.4);
+    }
+
+    /* Subtle floating background circles */
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      animation: float 6s ease-in-out infinite;
+      filter: blur(15px);
+      z-index: 0;
+    }
+
+    .circle1 {
+      width: 120px;
+      height: 120px;
+      top: -40px;
+      left: -40px;
+      animation-delay: 0s;
+    }
+
+    .circle2 {
+      width: 180px;
+      height: 180px;
+      bottom: -60px;
+      right: -60px;
+      animation-delay: 3s;
+    }
+
+    /* Animations */
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-15px);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .container {
+        padding: 30px 20px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .icon {
+        width: 60px;
+        height: 60px;
+        font-size: 2.2rem;
+      }
+
+      .btn {
+        padding: 12px 30px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="icon" aria-hidden="true">⚠️</div>
+    <h1>User Already Exists</h1>
+    <p>
+      The username or email you entered is already registered.<br />
+      Please try logging in or use a different username.
+    </p>
+    <a href="/" class="btn" role="button" aria-label="Go to login page">Go to Login</a>
+  </div>
+
+  <!-- Floating background circles -->
+  <div class="circle circle1"></div>
+  <div class="circle circle2"></div>
+</body>
+</html>
