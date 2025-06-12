@@ -1,0 +1,52 @@
+body {
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    background: #fff;
+    padding: 2.5rem 2rem;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(40, 60, 120, 0.15);
+    text-align: center;
+    min-width: 320px;
+}
+
+h1 {
+    font-size: 2rem;
+    margin-bottom: 1.2rem;
+    color: #333;
+}
+
+button#btn {
+    background: linear-gradient(90deg, #2575fc 0%, #6a11cb 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem 2.2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-bottom: 1.5rem;
+    outline: none;
+}
+
+button#btn:hover {
+    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+    transform: scale(1.04);
+}
+
+h2#counter {
+    font-size: 3rem;
+    color: #2575fc;
+    margin-top: 0.2rem;
+    margin-bottom: 0;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
