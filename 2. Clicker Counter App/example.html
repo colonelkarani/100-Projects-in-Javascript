@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storage Example</title>
+    <link rel="stylesheet" href="example.css">
+</head>
+<body>
+    <h1>Storage Example</h1>
+    <input type="text" id="username" placeholder="Enter your username">
+    <button id="saveLocal">Save to Local Storage</button>
+    <button id="saveSession">Save to Session Storage</button>
+    <button id="loadLocal">Load from Local Storage</button>
+    <button id="loadSession">Load from Session Storage</button>
+    <button id="clearLocal">Clear Local Storage</button>
+    <button id="clearSession">Clear Session Storage</button>
+
+    <script>
+        document.getElementById('saveLocal').addEventListener('click', function() {
+            const username = document.getElementById('username').value;
+            localStorage.setItem('username', username);
+            alert('Username saved to Local Storage');
+        });
+
+        document.getElementById('saveSession').addEventListener('click', function() {
+            const username = document.getElementById('username').value;
+            sessionStorage.setItem('sessionUsername', username);
+            alert('Username saved to Session Storage');
+        });
+
+        document.getElementById('loadLocal').addEventListener('click', function() {
+            const username = localStorage.getItem('username');
+            alert('Loaded from Local Storage: ' + username);
+        });
+
+        document.getElementById('loadSession').addEventListener('click', function() {
+            const sessionUsername = sessionStorage.getItem('sessionUsername');
+            alert('Loaded from Session Storage: ' + sessionUsername);
+        });
+
+        document.getElementById('clearLocal').addEventListener('click', function() {
+            localStorage.clear();
+            alert('Local Storage cleared');
+        });
+
+        document.getElementById('clearSession').addEventListener('click', function() {
+            sessionStorage.clear();
+            alert('Session Storage cleared');
+        });
+    </script>
+</body>
+</html>

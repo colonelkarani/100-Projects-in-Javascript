@@ -1,0 +1,70 @@
+body {
+    background: linear-gradient(120deg, #74ebd5 0%, #ACB6E5 100%);
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    background: #fff;
+    padding: 2.5rem 2rem 2rem 2rem;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(80, 120, 160, 0.15);
+    text-align: center;
+    min-width: 330px;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+}
+
+input[type="text"] {
+    padding: 0.7rem 1rem;
+    border: 1.5px solid #74ebd5;
+    border-radius: 8px;
+    font-size: 1rem;
+    width: 70%;
+    margin-bottom: 1.2rem;
+    margin-top: 0.2rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input[type="text"]:focus {
+    border-color: #5f9ea0;
+}
+
+button {
+    background: linear-gradient(90deg, #74ebd5 0%, #ACB6E5 100%);
+    color: #222;
+    border: none;
+    border-radius: 8px;
+    padding: 0.7rem 1.3rem;
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0.3rem 0.2rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(80, 120, 160, 0.07);
+}
+
+button:hover {
+    background: linear-gradient(90deg, #ACB6E5 0%, #74ebd5 100%);
+    color: #0077b6;
+}
+
+@media (max-width: 500px) {
+    .container {
+        min-width: unset;
+        width: 95vw;
+        padding: 1.5rem 0.5rem;
+    }
+    input[type="text"] {
+        width: 95%;
+    }
+}
