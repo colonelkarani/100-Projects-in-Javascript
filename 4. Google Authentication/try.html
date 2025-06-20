@@ -1,0 +1,3108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grace Community Church - Member Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2C5282;
+            --secondary-color: #E53E3E;
+            --accent-color: #D69E2E;
+            --text-primary: #1A202C;
+            --text-secondary: #4A5568;
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F7FAFC;
+            --bg-tertiary: #EDF2F7;
+            --border-color: #E2E8F0;
+            --success-color: #38A169;
+            --warning-color: #D69E2E;
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-tertiary: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .sidebar {
+            background: var(--bg-primary);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            width: 280px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .sidebar-header {
+            padding: 0 2rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 2rem;
+        }
+
+        .church-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .church-logo i {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .church-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            margin-top: 1rem;
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .user-info h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-info p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .nav-menu {
+            padding: 0 1rem;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .nav-link i {
+            font-size: 1.125rem;
+            width: 20px;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: 2rem;
+            background: var(--bg-secondary);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--bg-primary);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 100%;
+            background: var(--gradient-primary);
+            opacity: 0.1;
+            border-radius: 0 16px 16px 0;
+        }
+
+        .welcome-section {
+            position: relative;
+            z-index: 2;
+        }
+
+        .welcome-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-primary);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .main-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .sidebar-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-title i {
+            color: var(--primary-color);
+        }
+
+        .card-action {
+            margin-left: auto;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2A4A6B;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #2F855A;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #B7791F;
+        }
+
+        .card-content {
+            padding: 2rem;
+        }
+
+        .event-item {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.3s ease;
+        }
+
+        .event-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-date {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .event-day {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .event-month {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .event-details {
+            flex: 1;
+        }
+
+        .event-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .event-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .sermon-item {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.3s ease;
+        }
+
+        .sermon-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .sermon-item:last-child {
+            border-bottom: none;
+        }
+
+        .sermon-thumbnail {
+            width: 120px;
+            height: 80px;
+            border-radius: 8px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .sermon-info {
+            flex: 1;
+        }
+
+        .sermon-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .sermon-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .sermon-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .sermon-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .prayer-item {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.3s ease;
+        }
+
+        .prayer-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .prayer-item:last-child {
+            border-bottom: none;
+        }
+
+        .prayer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .prayer-author {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .prayer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .prayer-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .prayer-time {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .prayer-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .prayer-status.urgent {
+            background: #FED7D7;
+            color: #C53030;
+        }
+
+        .prayer-status.ongoing {
+            background: #FEFCBF;
+            color: #B7791F;
+        }
+
+        .prayer-status.answered {
+            background: #C6F6D5;
+            color: #2F855A;
+        }
+
+        .prayer-content {
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .prayer-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .prayer-reactions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reaction-btn {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .reaction-btn:hover {
+            background: var(--bg-secondary);
+        }
+
+        .reaction-btn.active {
+            color: var(--primary-color);
+            background: var(--bg-secondary);
+        }
+
+        .group-item {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.3s ease;
+        }
+
+        .group-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .group-item:last-child {
+            border-bottom: none;
+        }
+
+        .group-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            background: var(--gradient-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .group-info {
+            flex: 1;
+        }
+
+        .group-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .group-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .group-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .group-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .forum-post {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.3s ease;
+        }
+
+        .forum-post:hover {
+            background: var(--bg-secondary);
+        }
+
+        .forum-post:last-child {
+            border-bottom: none;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .post-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .post-time {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .post-category {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .post-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        .post-content {
+            color: var(--text-primary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .post-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .post-stats {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .volunteer-item {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.3s ease;
+        }
+
+        .volunteer-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .volunteer-item:last-child {
+            border-bottom: none;
+        }
+
+        .volunteer-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: var(--gradient-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .volunteer-info {
+            flex: 1;
+        }
+
+        .volunteer-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .volunteer-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .volunteer-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .volunteer-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.3s ease;
+        }
+
+        .notification-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item.unread {
+            background: #EBF8FF;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .notification-text {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .notification-time {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .donation-form {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+            cursor: pointer;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .amount-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .amount-option {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .amount-option:hover {
+            border-color: var(--primary-color);
+            background: var(--bg-secondary);
+        }
+
+        .amount-option.selected {
+            border-color: var(--primary-color);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .member-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.3s ease;
+        }
+
+        .member-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .member-item:last-child {
+            border-bottom: none;
+        }
+
+        .member-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .member-role {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .member-contact {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .member-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 3rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .tab-navigation {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-button {
+            padding: 1rem 1.5rem;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-secondary);
+        }
+
+        .floating-action {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .floating-action:hover {
+            transform: scale(1.1);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .badge-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .badge-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .badge-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-color);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--bg-tertiary);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--border-color);
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .responsive-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .responsive-table th,
+        .responsive-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .responsive-table th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .responsive-table tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .header {
+                padding: 1.5rem;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .card-content {
+                padding: 1.5rem;
+            }
+
+            .event-item,
+            .sermon-item,
+            .prayer-item,
+            .group-item,
+            .forum-post,
+            .volunteer-item {
+                padding: 1rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .amount-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .event-item,
+            .sermon-item,
+            .group-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .event-date,
+            .sermon-thumbnail,
+            .group-image {
+                align-self: center;
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .gradient-text {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .shadow-glow {
+            box-shadow: 0 0 20px rgba(44, 82, 130, 0.3);
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="church-logo">
+                    <i class="fas fa-church"></i>
+                    <span class="church-name">Grace Community</span>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">JD</div>
+                    <div class="user-info">
+                        <h4>John Doe</h4>
+                        <p>Active Member</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <a href="#dashboard" class="nav-link active">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#events" class="nav-link">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Events</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#sermons" class="nav-link">
+                        <i class="fas fa-play-circle"></i>
+                        <span>Sermons</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#prayers" class="nav-link">
+                        <i class="fas fa-praying-hands"></i>
+                        <span>Prayer Requests</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#groups" class="nav-link">
+                        <i class="fas fa-users"></i>
+                        <span>Small Groups</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#forum" class="nav-link">
+                        <i class="fas fa-comments"></i>
+                        <span>Community Forum</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#volunteer" class="nav-link">
+                        <i class="fas fa-hands-helping"></i>
+                        <span>Volunteer</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#giving" class="nav-link">
+                        <i class="fas fa-heart"></i>
+                        <span>Giving</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#directory" class="nav-link">
+                        <i class="fas fa-address-book"></i>
+                        <span>Member Directory</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#profile" class="nav-link">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Profile Settings</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="#logout" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header animate-fade-in">
+                <div class="welcome-section">
+                    <h1 class="welcome-title">Welcome back, John! 🙏</h1>
+                    <p class="welcome-subtitle">May God's blessings be upon you today. Here's what's happening in our community.</p>
+                    
+                    <div class="quick-stats">
+                        <div class="stat-card hover-scale">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Upcoming Events</div>
+                        </div>
+                        <div class="stat-card hover-scale">
+                            <div class="stat-icon">
+                                <i class="fas fa-praying-hands"></i>
+                            </div>
+                            <div class="stat-number">12</div>
+                            <div class="stat-label">Active Prayers</div>
+                        </div>
+                        <div class="stat-card hover-scale">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-number">2</div>
+                            <div class="stat-label">Small Groups</div>
+                        </div>
+                        <div class="stat-card hover-scale">
+                            <div class="stat-icon">
+                                <i class="fas fa-hands-helping"></i>
+                            </div>
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">Volunteer Hours</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Main Panel -->
+                <div class="main-panel">
+                    <!-- Upcoming Events -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-calendar-alt"></i>
+                                Upcoming Events
+                            </h2>
+                            <div class="card-action">
+                                <button class="btn btn-primary" onclick="openModal('eventModal')">
+                                    <i class="fas fa-plus"></i>
+                                    Add Event
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <div class="event-day">25</div>
+                                    <div class="event-month">Jun</div>
+                                </div>
+                                <div class="event-details">
+                                    <h3 class="event-title">Sunday Worship Service</h3>
+                                    <div class="event-meta">
+                                        <span><i class="fas fa-clock"></i> 10:00 AM - 12:00 PM</span>
+                                        <span><i class="fas fa-map-marker-alt"></i> Main Sanctuary</span>
+                                        <span><i class="fas fa-users"></i> 150 attending</span>
+                                    </div>
+                                    <p class="event-description">Join us for our weekly worship service featuring Pastor Michael's sermon on "Walking in Faith"</p>
+                                </div>
+                                <div class="event-actions">
+                                    <button class="btn btn-success">
+                                        <i class="fas fa-check"></i>
+                                        RSVP'd
+                                    </button>
+                                    <button class="btn btn-secondary">
+                                        <i class="fas fa-share"></i>
+                                        Share
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <div class="event-day">28</div>
+                                    <div class="event-month">Jun</div>
+                                </div>
+                                <div class="event-details">
+                                    <h3 class="event-title">Youth Bible Study</h3>
+                                    <div class="event-meta">
+                                        <span><i class="fas fa-clock"></i> 7:00 PM - 8:30 PM</span>
+                                        <span><i class="fas fa-map-marker-alt"></i> Youth Center</span>
+                                        <span><i class="fas fa-users"></i> 25 attending</span>
+                                    </div>
+                                    <p class="event-description">Interactive Bible study for teens and young adults focusing on modern Christian living</p>
+                                </div>
+                                <div class="event-actions">
+                                    <button class="btn btn-primary">
+                                        <i class="fas fa-calendar-plus"></i>
+                                        RSVP
+                                    </button>
+                                    <button class="btn btn-secondary">
+                                        <i class="fas fa-info-circle"></i>
+                                        Details
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <div class="event-day">02</div>
+                                    <div class="event-month">Jul</div>
+                                </div>
+                                <div class="event-details">
+                                    <h3 class="event-title">Community Outreach Day</h3>
+                                    <div class="event-meta">
+                                        <span><i class="fas fa-clock"></i> 9:00 AM - 4:00 PM</span>
+                                        <span><i class="fas fa-map-marker-alt"></i> Downtown Community Center</span>
+                                        <span><i class="fas fa-users"></i> 45 volunteers needed</span>
+                                    </div>
+                                    <p class="event-description">Join us in serving our community through food distribution and fellowship</p>
+                                </div>
+                                <div class="event-actions">
+                                    <button class="btn btn-warning">
+                                        <i class="fas fa-hands-helping"></i>
+                                        Volunteer
+                                    </button>
+                                    <button class="btn btn-secondary">
+                                        <i class="fas fa-share"></i>
+                                        Share
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sermon Archive -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-play-circle"></i>
+                                Recent Sermons
+                            </h2>
+                            <div class="card-action">
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-archive"></i>
+                                    View All
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="sermon-item">
+                                <div class="sermon-thumbnail">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                                <div class="sermon-info">
+                                    <h3 class="sermon-title">Walking in Faith Through Trials</h3>
+                                    <div class="sermon-meta">
+                                        <span><i class="fas fa-user"></i> Pastor Michael Johnson</span>
+                                        <span><i class="fas fa-calendar"></i> June 18, 2025</span>
+                                        <span><i class="fas fa-clock"></i> 45 min</span>
+                                        <span><i class="fas fa-eye"></i> 234 views</span>
+                                    </div>
+                                    <p class="sermon-description">Discover how to maintain unwavering faith even in the midst of life's greatest challenges. This powerful message explores biblical examples of perseverance.</p>
+                                    <div class="sermon-actions">
+                                        <button class="btn btn-primary">
+                                            <i class="fas fa-play"></i>
+                                            Watch
+                                        </button>
+                                        <button class="btn btn-secondary">
+                                            <i class="fas fa-headphones"></i>
+                                            Listen
+                                        </button>
+                                        <button class="btn btn-secondary">
+                                            <i class="fas fa-download"></i>
+                                            Download
+                                        </button>
+                                        <button class="btn btn-secondary">
+                                            <i class="fas fa-file-alt"></i>
+                                            Notes
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sermon-item">
+                                <div class="sermon-thumbnail">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                                <div class="sermon-info">
+                                    <h3 class="sermon-title">The Power of Community in Christ</h3>
+                                    <div class="sermon-meta">
+                                        <span><i class="fas fa-user"></i> Pastor Sarah Williams</span>
+                                        <span><i class="fas fa-calendar"></i> June 11, 2025</span>
+                                        <span><i class="fas fa-clock"></i> 38 min</span>
+                                        <span><i class="fas fa-eye"></i> 189 views</span>
+                                    </div>
+                                    <p class="sermon-description">Explore the importance of Christian fellowship and how we can build stronger bonds within our church community.</p>
+                                    <div class="sermon-actions">
+                                        <button class="btn btn-primary">
+                                            <i class="fas fa-play"></i>
+                                            Watch
+                                        </button>
+                                        <button class="btn btn-secondary">
+                                            <i class="fas fa-headphones"></i>
+                                            Listen
+                                        </button>
+                                        <button class="btn btn-secondary">
+                                            <i class="fas fa-download"></i>
+                                            Download
+                                        </button>
+                                        <button class="btn btn-secondary">
+                                            <i class="fas fa-bookmark"></i>
+                                            Save
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="sermon-item">
+                                <div class="sermon-thumbnail">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                                <div class="sermon-info">
+                                    <h3 class="sermon-title">Living with Purpose and Passion</h3>
+                                    <div class="sermon-meta">
+                                        <span><i class="fas fa-user"></i> Guest Speaker: Rev. David Chen</span>
+                                        <span><i class="fas fa-calendar"></i> June 4, 2025</span>
+                                        <span><i class="fas fa-clock"></i> 52 min</span>
+                                        <span><i class="fas fa-eye"></i> 312 views</span>
+                                    </div>
+                                    <p class="sermon-description">A inspiring message about discovering God's unique purpose for your life and living it with passion and dedication.</p>
+                                    <div class="sermon-actions">
+                                        <button class="btn btn-primary">
+                                            <i class="fas fa-play"></i>
+                                            Watch
+                                        </button>
+                                        <button class="btn btn-secondary">
+                                            <i class="fas fa-headphones"></i>
+                                            Listen
+                                        </button>
+                                        <button class="btn btn-secondary">
+                                            <i class="fas fa-download"></i>
+                                            Download
+                                        </button>
+                                        <button class="btn btn-secondary">
+                                            <i class="fas fa-share"></i>
+                                            Share
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Community Forum -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-comments"></i>
+                                Community Forum
+                            </h2>
+                            <div class="card-action">
+                                <button class="btn btn-primary" onclick="openModal('forumModal')">
+                                    <i class="fas fa-plus"></i>
+                                    New Post
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="tab-navigation">
+                                <button class="tab-button active" onclick="switchTab('recent')">Recent Posts</button>
+                                <button class="tab-button" onclick="switchTab('testimonies')">Testimonies</button>
+                                <button class="tab-button" onclick="switchTab('questions')">Questions</button>
+                                <button class="tab-button" onclick="switchTab('announcements')">Announcements</button>
+                            </div>
+
+                            <div class="tab-content active" id="recent">
+                                <div class="forum-post">
+                                    <div class="post-header">
+                                        <div class="post-author">
+                                            <div class="post-avatar">MJ</div>
+                                            <div>
+                                                <div class="post-name">Mary Johnson</div>
+                                                <div class="post-time">2 hours ago</div>
+                                            </div>
+                                        </div>
+                                        <div class="post-category">Testimony</div>
+                                    </div>
+                                    <h3 class="post-title">God's Faithfulness in Difficult Times</h3>
+                                    <p class="post-content">I wanted to share how God has been faithful to our family during my husband's recent illness. Your prayers and support have meant the world to us, and I'm happy to report that he's making a full recovery. Praise God!</p>
+                                    <div class="post-actions">
+                                        <div class="post-stats">
+                                            <span><i class="fas fa-heart"></i> 24 likes</span>
+                                            <span><i class="fas fa-comment"></i> 8 comments</span>
+                                            <span><i class="fas fa-share"></i> 3 shares</span>
+                                        </div>
+                                        <button class="btn btn-secondary">
+                                            <i class="fas fa-comment"></i>
+                                            Comment
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="forum-post">
+                                    <div class="post-header">
+                                        <div class="post-author">
+                                            <div class="post-avatar">RB</div>
+                                            <div>
+                                                <div class="post-name">Robert Brown</div>
+                                                <div class="post-time">5 hours ago</div>
+                                            </div>
+                                        </div>
+                                        <div class="post-category">Question</div>
+                                    </div>
+                                    <h3 class="post-title">Bible Study Resources for New Christians</h3>
+                                    <p class="post-content">Hi everyone! I'm looking for recommendations for Bible study materials that would be good for someone who just accepted Christ. Any suggestions for beginner-friendly resources?</p>
+                                    <div class="post-actions">
+                                        <div class="post-stats">
+                                            <span><i class="fas fa-heart"></i> 12 likes</span>
+                                            <span><i class="fas fa-comment"></i> 15 comments</span>
+                                            <span><i class="fas fa-share"></i> 2 shares</span>
+                                        </div>
+                                        <button class="btn btn-secondary">
+                                            <i class="fas fa-comment"></i>
+                                            Comment
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="forum-post">
+                                    <div class="post-header">
+                                        <div class="post-author">
+                                            <div class="post-avatar">LW</div>
+                                            <div>
+                                                <div class="post-name">Linda Wilson</div>
+                                                <div class="post-time">1 day ago</div>
+                                            </div>
+                                        </div>
+                                        <div class="post-category">Announcement</div>
+                                    </div>
+                                    <h3 class="post-title">Women's Ministry Retreat Registration Open</h3>
+                                    <p class="post-content">Ladies, registration is now open for our annual Women's Ministry Retreat scheduled for August 12-14. This year's theme is "Renewed in His Love." Early bird pricing available until July 1st!</p>
+                                    <div class="post-actions">
+                                        <div class="post-stats">
+                                            <span><i class="fas fa-heart"></i> 31 likes</span>
+                                            <span><i class="fas fa-comment"></i> 6 comments</span>
+                                            <span><i class="fas fa-share"></i> 12 shares</span>
+                                        </div>
+                                        <button class="btn btn-primary">
+                                            <i class="fas fa-external-link-alt"></i>
+                                            Register
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Panel -->
+                <div class="sidebar-panel">
+                    <!-- Notifications -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-bell"></i>
+                                Notifications
+                                <span class="badge badge-primary">3</span>
+                            </h2>
+                            <div class="card-action">
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-cog"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="notification-item unread">
+                                <div class="notification-icon">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="notification-title">Event Reminder</div>
+                                    <div class="notification-text">Youth Bible Study starts in 2 hours</div>
+                                    <div class="notification-time">30 minutes ago</div>
+                                </div>
+                            </div>
+
+                            <div class="notification-item unread">
+                                <div class="notification-icon">
+                                    <i class="fas fa-praying-hands"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="notification-title">Prayer Request Update</div>
+                                    <div class="notification-text">Sarah's prayer request has been answered!</div>
+                                    <div class="notification-time">2 hours ago</div>
+                                </div>
+                            </div>
+
+                            <div class="notification-item">
+                                <div class="notification-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="notification-title">Small Group Update</div>
+                                    <div class="notification-text">New member joined your Bible Study group</div>
+                                    <div class="notification-time">1 day ago</div>
+                                </div>
+                            </div>
+
+                            <div class="notification-item">
+                                <div class="notification-icon">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div class="notification-content">
+                                    <div class="notification-title">Donation Received</div>
+                                    <div class="notification-text">Thank you for your generous contribution!</div>
+                                    <div class="notification-time">2 days ago</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prayer Requests -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-praying-hands"></i>
+                                Prayer Requests
+                            </h2>
+                            <div class="card-action">
+                                <button class="btn btn-primary" onclick="openModal('prayerModal')">
+                                    <i class="fas fa-plus"></i>
+                                    Add Prayer
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="prayer-item">
+                                <div class="prayer-header">
+                                    <div class="prayer-author">
+                                        <div class="prayer-avatar">SM</div>
+                                        <div>
+                                            <div class="prayer-name">Sarah Miller</div>
+                                            <div class="prayer-time">3 hours ago</div>
+                                        </div>
+                                    </div>
+                                    <div class="prayer-status urgent">Urgent</div>
+                                </div>
+                                <p class="prayer-content">Please pray for my father who is undergoing surgery tomorrow. We trust in God's healing power and ask for your prayers for the medical team and a successful recovery.</p>
+                                <div class="prayer-actions">
+                                    <div class="prayer-reactions">
+                                        <button class="reaction-btn active">
+                                            <i class="fas fa-praying-hands"></i>
+                                            <span>12</span>
+                                        </button>
+                                        <button class="reaction-btn">
+                                            <i class="fas fa-heart"></i>
+                                            <span>8</span>
+                                        </button>
+                                    </div>
+                                    <button class="btn btn-secondary">
+                                        <i class="fas fa-comment"></i>
+                                        Comment
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="prayer-item">
+                                <div class="prayer-header">
+                                    <div class="prayer-author">
+                                        <div class="prayer-avatar">JT</div>
+                                        <div>
+                                            <div class="prayer-name">James Thompson</div>
+                                            <div class="prayer-time">1 day ago</div>
+                                        </div>
+                                    </div>
+                                    <div class="prayer-status ongoing">Ongoing</div>
+                                </div>
+                                <p class="prayer-content">Seeking prayers for wisdom and guidance as I consider a career change. Please pray that God will open the right doors and give me peace about His will for my life.</p>
+                                <div class="prayer-actions">
+                                    <div class="prayer-reactions">
+                                        <button class="reaction-btn active">
+                                            <i class="fas fa-praying-hands"></i>
+                                            <span>15</span>
+                                        </button>
+                                        <button class="reaction-btn">
+                                            <i class="fas fa-heart"></i>
+                                            <span>6</span>
+                                        </button>
+                                    </div>
+                                    <button class="btn btn-secondary">
+                                        <i class="fas fa-comment"></i>
+                                        Comment
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="prayer-item">
+                                <div class="prayer-header">
+                                    <div class="prayer-author">
+                                        <div class="prayer-avatar">EM</div>
+                                        <div>
+                                            <div class="prayer-name">Emily Martinez</div>
+                                            <div class="prayer-time">2 days ago</div>
+                                        </div>
+                                    </div>
+                                    <div class="prayer-status answered">Answered</div>
+                                </div>
+                                <p class="prayer-content">UPDATE: Thank you all for your prayers! My daughter's job interview went wonderfully and she got the position. God is so good! 🙏</p>
+                                <div class="prayer-actions">
+                                    <div class="prayer-reactions">
+                                        <button class="reaction-btn">
+                                            <i class="fas fa-praying-hands"></i>
+                                            <span>22</span>
+                                        </button>
+                                        <button class="reaction-btn active">
+                                            <i class="fas fa-heart"></i>
+                                            <span>18</span>
+                                        </button>
+                                    </div>
+                                    <button class="btn btn-secondary">
+                                        <i class="fas fa-comment"></i>
+                                        Comment
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Small Groups -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-users"></i>
+                                My Small Groups
+                            </h2>
+                            <div class="card-action">
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-search"></i>
+                                    Find Groups
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="group-item">
+                                <div class="group-image">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                <div class="group-info">
+                                    <h3 class="group-name">Young Adults Bible Study</h3>
+                                    <div class="group-meta">
+                                        <span><i class="fas fa-calendar"></i> Wednesdays 7:00 PM</span>
+                                        <span><i class="fas fa-users"></i> 15 members</span>
+                                    </div>
+                                    <p class="group-description">Exploring God's word together as young adults navigating life's challenges with faith.</p>
+                                    <div class="group-actions">
+                                        <button class="btn btn-primary">
+                                            <i class="fas fa-comments"></i>
+                                            Group Chat
+                                        </button>
+                                        <button class="btn btn-secondary">
+                                            <i class="fas fa-calendar"></i>
+                                            Schedule
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="group-item">
+                                <div class="group-image">
+                                    <i class="fas fa-hands-helping"></i>
+                                </div>
+                                <div class="group-info">
+                                    <h3 class="group-name">Community Outreach Team</h3>
+                                    <div class="group-meta">
+                                        <span><i class="fas fa-calendar"></i> Saturdays 9:00 AM</span>
+                                        <span><i class="fas fa-users"></i> 28 members</span>
+                                    </div>
+                                    <p class="group-description">Serving our community through various outreach programs and volunteer activities.</p>
+                                    <div class="group-actions">
+                                        <button class="btn btn-primary">
+                                            <i class="fas fa-comments"></i>
+                                            Group Chat
+                                        </button>
+                                        <button class="btn btn-secondary">
+                                            <i class="fas fa-tasks"></i>
+                                            Projects
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Volunteer Opportunities -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-hands-helping"></i>
+                                Volunteer Opportunities
+                            </h2>
+                            <div class="card-action">
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-history"></i>
+                                    My History
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="volunteer-item">
+                                <div class="volunteer-icon">
+                                    <i class="fas fa-utensils"></i>
+                                </div>
+                                <div class="volunteer-info">
+                                    <h3 class="volunteer-title">Sunday Morning Hospitality</h3>
+                                    <div class="volunteer-meta">
+                                        <span><i class="fas fa-calendar"></i> Every Sunday</span>
+                                        <span><i class="fas fa-clock"></i> 8:30 AM - 12:30 PM</span>
+                                        <span><i class="fas fa-users"></i> 3 spots available</span>
+                                    </div>
+                                    <p class="volunteer-description">Help welcome visitors and serve coffee and refreshments before and after service.</p>
+                                    <div class="volunteer-actions">
+                                        <button class="btn btn-primary">
+                                            <i class="fas fa-hand-paper"></i>
+                                            Sign Up
+                                        </button>
+                                        <button class="btn btn-secondary">
+                                            <i class="fas fa-info-circle"></i>
+                                            Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="volunteer-item">
+                                <div class="volunteer-icon">
+                                    <i class="fas fa-child"></i>
+                                </div>
+                                <div class="volunteer-info">
+                                    <h3 class="volunteer-title">Children's Ministry Helper</h3>
+                                    <div class="volunteer-meta">
+                                        <span><i class="fas fa-calendar"></i> Sundays (Rotating)</span>
+                                        <span><i class="fas fa-clock"></i> 10:00 AM - 12:00 PM</span>
+                                        <span><i class="fas fa-users"></i> 2 spots available</span>
+                                    </div>
+                                    <p class="volunteer-description">Assist with children's Sunday school activities and help create a fun learning environment.</p>
+                                    <div class="volunteer-actions">
+                                        <button class="btn btn-primary">
+                                            <i class="fas fa-hand-paper"></i>
+                                            Sign Up
+                                        </button>
+                                        <button class="btn btn-secondary">
+                                            <i class="fas fa-info-circle"></i>
+                                            Details
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="volunteer-item">
+                                <div class="volunteer-icon">
+                                    <i class="fas fa-music"></i>
+                                </div>
+                                <div class="volunteer-info">
+                                    <h3 class="volunteer-title">Worship Team Musician</h3>
+                                    <div class="volunteer-meta">
+                                        <span><i class="fas fa-calendar"></i> Sundays (Monthly)</span>
+                                        <span><i class="fas fa-clock"></i> 9:00 AM - 12:00 PM</span>
+                                        <span><i class="fas fa-users"></i> Ongoing need</span>
+                                    </div>
+                                    <p class="volunteer-description">Join our worship team! We're looking for instrumentalists and vocalists to lead congregation in praise.</p>
+                                    <div class="volunteer-actions">
+                                        <button class="btn btn-primary">
+                                            <i class="fas fa-hand-paper"></i>
+                                            Apply
+                                        </button>
+                                        <button class="btn btn-secondary">
+                                            <i class="fas fa-microphone"></i>
+                                            Audition Info
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Giving/Donations -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-heart"></i>
+                                Giving & Donations
+                            </h2>
+                            <div class="card-action">
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-chart-line"></i>
+                                    Giving History
+                                </button>
+                            </div>
+                        </div>
+                        <div class="donation-form">
+                            <div class="form-group">
+                                <label class="form-label">Donation Type</label>
+                                <select class="form-select">
+                                    <option value="tithe">Tithe</option>
+                                    <option value="offering">Offering</option>
+                                    <option value="missions">Missions</option>
+                                    <option value="building">Building Fund</option>
+                                    <option value="special">Special Project</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Amount</label>
+                                <div class="amount-options">
+                                    <div class="amount-option" onclick="selectAmount(25)">$25</div>
+                                    <div class="amount-option" onclick="selectAmount(50)">$50</div>
+                                    <div class="amount-option" onclick="selectAmount(100)">$100</div>
+                                    <div class="amount-option" onclick="selectAmount(250)">$250</div>
+                                    <div class="amount-option" onclick="selectAmount(500)">$500</div>
+                                    <div class="amount-option" onclick="selectAmount(0)">Other</div>
+                                </div>
+                                <input type="number" class="form-input" placeholder="Enter custom amount" min="1">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Frequency</label>
+                                <select class="form-select">
+                                    <option value="once">One-time</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="quarterly">Quarterly</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Payment Method</label>
+                                <select class="form-select">
+                                    <option value="card">Credit/Debit Card</option>
+                                    <option value="bank">Bank Transfer</option>
+                                    <option value="paypal">PayPal</option>
+                                    <option value="crypto">Cryptocurrency</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Special Notes (Optional)</label>
+                                <textarea class="form-textarea" placeholder="Add any special instructions or dedication..."></textarea>
+                            </div>
+
+                            <button class="btn btn-primary" style="width: 100%; padding: 1rem; font-size: 1.125rem;">
+                                <i class="fas fa-heart"></i>
+                                Give Now
+                            </button>
+
+                            <div style="margin-top: 1rem; text-align: center; color: var(--text-secondary); font-size: 0.875rem;">
+                                <i class="fas fa-lock"></i>
+                                Secure donation processing powered by Stripe
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Member Directory Section -->
+            <div class="card animate-fade-in" style="margin-top: 2rem;">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-address-book"></i>
+                        Member Directory
+                    </h2>
+                    <div class="card-action">
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="search-box">
+                        <input type="text" class="search-input" placeholder="Search members by name, role, or ministry...">
+                        <i class="fas fa-search search-icon"></i>
+                    </div>
+
+                    <div class="tab-navigation">
+                        <button class="tab-button active" onclick="switchTab('all-members')">All Members</button>
+                        <button class="tab-button" onclick="switchTab('leadership')">Leadership</button>
+                        <button class="tab-button" onclick="switchTab('ministries')">Ministry Leaders</button>
+                        <button class="tab-button" onclick="switchTab('new-members')">New Members</button>
+                    </div>
+
+                    <div class="tab-content active" id="all-members">
+                        <div class="member-item">
+                            <div class="member-avatar">PM</div>
+                            <div class="member-info">
+                                <div class="member-name">Pastor Michael Johnson</div>
+                                <div class="member-role">Senior Pastor</div>
+                                <div class="member-contact">michael.johnson@gracechurch.org</div>
+                            </div>
+                            <div class="member-actions">
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-envelope"></i>
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="member-item">
+                            <div class="member-avatar">SW</div>
+                            <div class="member-info">
+                                <div class="member-name">Sarah Williams</div>
+                                <div class="member-role">Associate Pastor</div>
+                                <div class="member-contact">sarah.williams@gracechurch.org</div>
+                            </div>
+                            <div class="member-actions">
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-envelope"></i>
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="member-item">
+                            <div class="member-avatar">MJ</div>
+                            <div class="member-info">
+                                <div class="member-name">Mary Johnson</div>
+                                <div class="member-role">Worship Leader</div>
+                                <div class="member-contact">mary.johnson@email.com</div>
+                            </div>
+                            <div class="member-actions">
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-envelope"></i>
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="member-item">
+                            <div class="member-avatar">RB</div>
+                            <div class="member-info">
+                                <div class="member-name">Robert Brown</div>
+                                <div class="member-role">Youth Pastor</div>
+                                <div class="member-contact">robert.brown@email.com</div>
+                            </div>
+                            <div class="member-actions">
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-envelope"></i>
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="member-item">
+                            <div class="member-avatar">LW</div>
+                            <div class="member-info">
+                                <div class="member-name">Linda Wilson</div>
+                                <div class="member-role">Women's Ministry Leader</div>
+                                <div class="member-contact">linda.wilson@email.com</div>
+                            </div>
+                            <div class="member-actions">
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-envelope"></i>
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="member-item">
+                            <div class="member-avatar">DT</div>
+                            <div class="member-info">
+                                <div class="member-name">David Thompson</div>
+                                <div class="member-role">Deacon</div>
+                                <div class="member-contact">david.thompson@email.com</div>
+                            </div>
+                            <div class="member-actions">
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-envelope"></i>
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-phone"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Management Section -->
+            <div class="card animate-fade-in" style="margin-top: 2rem;">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-user-cog"></i>
+                        Profile Management
+                    </h2>
+                </div>
+                <div class="card-content">
+                    <div class="tab-navigation">
+                        <button class="tab-button active" onclick="switchTab('personal-info')">Personal Info</button>
+                        <button class="tab-button" onclick="switchTab('contact-info')">Contact Info</button>
+                        <button class="tab-button" onclick="switchTab('ministry-involvement')">Ministry Involvement</button>
+                        <button class="tab-button" onclick="switchTab('privacy-settings')">Privacy Settings</button>
+                        <button class="tab-button" onclick="switchTab('account-security')">Account Security</button>
+                    </div>
+
+                    <div class="tab-content active" id="personal-info">
+                        <form class="profile-form">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                                <div class="form-group">
+                                    <label class="form-label">First Name</label>
+                                    <input type="text" class="form-input" value="John" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Last Name</label>
+                                    <input type="text" class="form-input" value="Doe" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Date of Birth</label>
+                                <input type="date" class="form-input" value="1990-05-15">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Marital Status</label>
+                                <select class="form-select">
+                                    <option value="single">Single</option>
+                                    <option value="married" selected>Married</option>
+                                    <option value="divorced">Divorced</option>
+                                    <option value="widowed">Widowed</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Occupation</label>
+                                <input type="text" class="form-input" value="Software Engineer">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Bio</label>
+                                <textarea class="form-textarea" placeholder="Tell us a little about yourself...">Passionate about technology and serving God. Love spending time with family and participating in church activities.</textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Save Changes
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="tab-content" id="contact-info">
+                        <form class="profile-form">
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-input" value="john.doe@email.com" required>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                                <div class="form-group">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-input" value="+1 (555) 123-4567">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Emergency Contact</label>
+                                    <input type="tel" class="form-input" value="+1 (555) 987-6543">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Address</label>
+                                <input type="text" class="form-input" value="123 Main Street">
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 100px; gap: 1.5rem;">
+                                <div class="form-group">
+                                    <label class="form-label">City</label>
+                                    <input type="text" class="form-input" value="Anytown">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">State</label>
+                                    <input type="text" class="form-input" value="CA">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">ZIP</label>
+                                    <input type="text" class="form-input" value="12345">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Update Contact Info
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="tab-content" id="ministry-involvement">
+                        <div class="form-group">
+                            <label class="form-label">Current Ministry Involvement</label>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Young Adults Bible Study</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Community Outreach</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox">
+                                    <span>Worship Team</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox">
+                                    <span>Children's Ministry</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox">
+                                    <span>Hospitality Team</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox">
+                                    <span>Media/Tech Team</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Skills & Talents</label>
+                            <textarea class="form-textarea" placeholder="Share your skills and talents that could benefit the church...">Programming, web development, sound engineering, guitar playing</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Availability</label>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Sunday Morning</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox">
+                                    <span>Sunday Evening</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Wednesday Evening</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox">
+                                    <span>Saturday Morning</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox">
+                                    <span>Weekday Evenings</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox">
+                                    <span>Special Events</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Update Ministry Info
+                        </button>
+                    </div>
+
+                    <div class="tab-content" id="privacy-settings">
+                        <div class="form-group">
+                            <label class="form-label">Profile Visibility</label>
+                            <select class="form-select">
+                                <option value="public">Public - Visible to all members</option>
+                                <option value="members" selected>Members Only - Visible to church members</option>
+                                <option value="leadership">Leadership Only - Visible to church leadership</option>
+                                <option value="private">Private - Not visible in directory</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Contact Information Sharing</label>
+                            <div style="margin-top: 1rem;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Allow members to see my email address</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                    <input type="checkbox">
+                                    <span>Allow members to see my phone number</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                    <input type="checkbox">
+                                    <span>Allow members to see my address</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Communication Preferences</label>
+                            <div style="margin-top: 1rem;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Receive email notifications about events</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Receive prayer request notifications</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                    <input type="checkbox">
+                                    <span>Receive SMS notifications</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;">
+                                    <input type="checkbox" checked>
+                                    <span>Receive weekly newsletter</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Save Privacy Settings
+                        </button>
+                    </div>
+
+                    <div class="tab-content" id="account-security">
+                        <div class="form-group">
+                            <label class="form-label">Change Password</label>
+                            <input type="password" class="form-input" placeholder="Current Password" style="margin-bottom: 1rem;">
+                            <input type="password" class="form-input" placeholder="New Password" style="margin-bottom: 1rem;">
+                            <input type="password" class="form-input" placeholder="Confirm New Password">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Two-Factor Authentication</label>
+                            <div style="display: flex; align-items: center; gap: 1rem; margin-top: 1rem;">
+                                <span>Status: <span class="badge badge-warning">Disabled</span></span>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-shield-alt"></i>
+                                    Enable 2FA
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Login Activity</label>
+                            <div style="margin-top: 1rem;">
+                                <table class="responsive-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Device</th>
+                                            <th>Location</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>June 18, 2025 5:46 PM</td>
+                                            <td>Chrome on Windows</td>
+                                            <td>Thika, Kenya</td>
+                                            <td><span class="badge badge-success">Current</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>June 17, 2025 8:23 AM</td>
+                                            <td>Mobile Safari</td>
+                                            <td>Thika, Kenya</td>
+                                            <td><span class="badge badge-secondary">Logged out</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>June 16, 2025 7:15 PM</td>
+                                            <td>Chrome on Windows</td>
+                                            <td>Thika, Kenya</td>
+                                            <td><span class="badge badge-secondary">Logged out</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 1rem;">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Update Password
+                            </button>
+                            <button type="button" class="btn btn-secondary">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout All Devices
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Event Modal -->
+    <div class="modal" id="eventModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Event</h3>
+                <button class="modal-close" onclick="closeModal('eventModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label class="form-label">Event Title</label>
+                    <input type="text" class="form-input" placeholder="Enter event title" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" placeholder="Event description..."></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Time</label>
+                        <input type="time" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-input" placeholder="Event location">
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('eventModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Prayer Modal -->
+    <div class="modal" id="prayerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Submit Prayer Request</h3>
+                <button class="modal-close" onclick="closeModal('prayerModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label class="form-label">Prayer Request</label>
+                    <textarea class="form-textarea" placeholder="Share your prayer request..." required style="min-height: 120px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Privacy Level</label>
+                    <select class="form-select">
+                        <option value="public">Public - Visible to all members</option>
+                        <option value="leadership">Leadership Only</option>
+                        <option value="anonymous">Anonymous</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Urgency</label>
+                    <select class="form-select">
+                        <option value="normal">Normal</option>
+                        <option value="urgent">Urgent</option>
+                        <option value="ongoing">Ongoing</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('prayerModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Prayer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Forum Modal -->
+    <div class="modal" id="forumModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Post</h3>
+                <button class="modal-close" onclick="closeModal('forumModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label class="form-label">Post Title</label>
+                    <input type="text" class="form-input" placeholder="Enter post title" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-select">
+                        <option value="general">General Discussion</option>
+                        <option value="testimony">Testimony</option>
+                        <option value="question">Question</option>
+                        <option value="announcement">Announcement</option>
+                        <option value="prayer">Prayer Request</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Content</label>
+                    <textarea class="form-textarea" placeholder="Share your thoughts..." required style="min-height: 150px;"></textarea>
+                </div>
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('forumModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="floating-action pulse-animation" onclick="openModal('prayerModal')" title="Quick Prayer Request">
+        <i class="fas fa-praying-hands"></i>
+    </button>
+
+    <script>
+        // Modal functionality
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Tab functionality
+        function switchTab(tabId) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected tab content
+            const selectedTab = document.getElementById(tabId);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Amount selection functionality
+        function selectAmount(amount) {
+            const options = document.querySelectorAll('.amount-option');
+            options.forEach(option => option.classList.remove('selected'));
+            
+            event.target.classList.add('selected');
+            
+            const customInput = document.querySelector('input[type="number"]');
+            if (amount > 0) {
+                customInput.value = amount;
+            } else {
+                customInput.focus();
+            }
+        }
+
+        // Navigation functionality
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all nav links
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Here you would typically handle the navigation
+                // For demo purposes, we'll just update the active state
+            });
+        });
+
+        // Close modal when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+
+        // Search functionality
+        document.querySelectorAll('.search-input').forEach(input => {
+            input.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                // Here you would implement the actual search functionality
+                console.log('Searching for:', searchTerm);
+            });
+        });
+
+        // Form submission handlers
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                // Here you would handle form submission
+                console.log('Form submitted:', this);
+                
+                // Show success message (you could implement a toast notification)
+                alert('Form submitted successfully!');
+            });
+        });
+
+        // Reaction button functionality
+        document.querySelectorAll('.reaction-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.toggle('active');
+                
+                // Update count (demo)
+                const countSpan = this.querySelector('span');
+                if (countSpan) {
+                    let count = parseInt(countSpan.textContent);
+                    countSpan.textContent = this.classList.contains('active') ? count + 1 : count - 1;
+                }
+            });
+        });
+
+        // Sidebar toggle for mobile
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('open');
+        }
+
+        // Add mobile menu button (you would add this to your HTML)
+        if (window.innerWidth <= 1024) {
+            const mobileMenuBtn = document.createElement('button');
+            mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            mobileMenuBtn.className = 'mobile-menu-btn';
+            mobileMenuBtn.style.cssText = `
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 10001;
+                background: var(--primary-color);
+                color: white;
+                border: none;
+                padding: 0.75rem;
+                border-radius: 8px;
+                font-size: 1.125rem;
+                cursor: pointer;
+            `;
+            mobileMenuBtn.onclick = toggleSidebar;
+            document.body.appendChild(mobileMenuBtn);
+        }
+
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add fade-in animation to cards with delay
+            const cards = document.querySelectorAll('.card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+
+        // Notification management
+        function markNotificationAsRead(notificationElement) {
+            notificationElement.classList.remove('unread');
+            // Update notification count
+            const badge = document.querySelector('.card-title .badge');
+            if (badge) {
+                let count = parseInt(badge.textContent);
+                if (count > 0) {
+                    badge.textContent = count - 1;
+                    if (count - 1 === 0) {
+                        badge.style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        // Auto-mark notifications as read when clicked
+        document.querySelectorAll('.notification-item').forEach(item => {
+            item.addEventListener('click', function() {
+                markNotificationAsRead(this);
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Auto-save functionality for forms
+        const autoSaveFields = document.querySelectorAll('input, textarea, select');
+        autoSaveFields.forEach(field => {
+            field.addEventListener('change', function() {
+                // Here you would implement auto-save functionality
+                console.log('Auto-saving field:', this.name, this.value);
+            });
+        });
+
+        // Progress bar animation
+        function animateProgressBar(progressBar, targetWidth) {
+            progressBar.style.width = '0%';
+            setTimeout(() => {
+                progressBar.style.width = targetWidth + '%';
+            }, 100);
+        }
+
+        // Initialize progress bars
+        document.querySelectorAll('.progress-fill').forEach(bar => {
+            const width = Math.random() * 100; // Demo random width
+            animateProgressBar(bar, width);
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + K to open search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                const searchInput = document.querySelector('.search-input');
+                if (searchInput) {
+                    searchInput.focus();
+                }
+            }
+            
+            // Escape to close modals
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.active').forEach(modal => {
+                    modal.classList.remove('active');
+                });
+            }
+        });
+
+        // Real-time updates simulation
+        function simulateRealTimeUpdates() {
+            setInterval(() => {
+                // Simulate new notifications
+                const notifications = document.querySelectorAll('.notification-item');
+                if (Math.random() > 0.95 && notifications.length > 0) {
+                    // Add unread class to random notification
+                    const randomNotification = notifications[Math.floor(Math.random() * notifications.length)];
+                    randomNotification.classList.add('unread');
+                }
+            }, 10000); // Check every 10 seconds
+        }
+
+        // Initialize real-time updates
+        simulateRealTimeUpdates();
+
+        // Service Worker registration for offline functionality
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => console.log('SW registered'))
+                .catch(error => console.log('SW registration failed'));
+        }
+
+        // Print functionality
+        function printPage() {
+            window.print();
+        }
+
+        // Export functionality
+        function exportData(format) {
+            console.log('Exporting data in format:', format);
+            // Here you would implement actual export functionality
+        }
+
+        // Theme toggle functionality
+        function toggleTheme() {
+            document.body.classList.toggle('dark-theme');
+            localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+        }
+
+        // Initialize tooltips
+        function initTooltips() {
+            const tooltipElements = document.querySelectorAll('[title]');
+            tooltipElements.forEach(element => {
+                element.addEventListener('mouseenter', function() {
+                    // Create tooltip element
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'tooltip';
+                    tooltip.textContent = this.getAttribute('title');
+                    tooltip.style.cssText = `
+                        position: absolute;
+                        background: rgba(0, 0, 0, 0.8);
+                        color: white;
+                        padding: 0.5rem;
+                        border-radius: 4px;
+                        font-size: 0.875rem;
+                        z-index: 10000;
+                        pointer-events: none;
+                    `;
+                    document.body.appendChild(tooltip);
+                    
+                    // Position tooltip
+                    const rect = this.getBoundingClientRect();
+                    tooltip.style.left = rect.left + 'px';
+                    tooltip.style.top = (rect.top - tooltip.offsetHeight - 5) + 'px';
+                    
+                    this.tooltipElement = tooltip;
+                });
+                
+                element.addEventListener('mouseleave', function() {
+                    if (this.tooltipElement) {
+                        document.body.removeChild(this.tooltipElement);
+                        this.tooltipElement = null;
+                    }
+                });
+            });
+        }
+
+        // Initialize tooltips on page load
+        initTooltips();
+
+        console.log('Grace Community Church Member Dashboard loaded successfully! 🙏');
+    </script>
+</body>
+</html>

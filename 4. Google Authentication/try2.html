@@ -1,0 +1,3883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grace Community Church - Member Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2C5282;
+            --secondary-color: #E53E3E;
+            --accent-color: #D69E2E;
+            --text-primary: #1A202C;
+            --text-secondary: #4A5568;
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #F7FAFC;
+            --bg-tertiary: #EDF2F7;
+            --border-color: #E2E8F0;
+            --success-color: #38A169;
+            --warning-color: #D69E2E;
+            --error-color: #E53E3E;
+            --info-color: #3182CE;
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-tertiary: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-success: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            --gradient-warning: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            --gradient-error: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+            --border-radius-sm: 6px;
+            --border-radius-md: 8px;
+            --border-radius-lg: 12px;
+            --border-radius-xl: 16px;
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
+        }
+
+        [data-theme="dark"] {
+            --text-primary: #F7FAFC;
+            --text-secondary: #CBD5E0;
+            --bg-primary: #1A202C;
+            --bg-secondary: #2D3748;
+            --bg-tertiary: #4A5568;
+            --border-color: #4A5568;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: all var(--transition-normal);
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .sidebar {
+            background: var(--bg-primary);
+            border-right: 1px solid var(--border-color);
+            padding: var(--spacing-xl) 0;
+            position: fixed;
+            height: 100vh;
+            width: 280px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+            transition: transform var(--transition-normal);
+        }
+
+        .sidebar-header {
+            padding: 0 var(--spacing-xl) var(--spacing-xl);
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .church-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            cursor: pointer;
+            transition: transform var(--transition-normal);
+        }
+
+        .church-logo:hover {
+            transform: scale(1.02);
+        }
+
+        .church-logo i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .church-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--bg-secondary);
+            border-radius: var(--border-radius-lg);
+            margin-top: var(--spacing-md);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            position: relative;
+        }
+
+        .user-profile:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .user-avatar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            background: var(--success-color);
+            border: 2px solid var(--bg-primary);
+            border-radius: 50%;
+            transform: translate(25%, -25%);
+        }
+
+        .user-info h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+            color: var(--text-primary);
+        }
+
+        .user-info p {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .user-status {
+            position: absolute;
+            top: var(--spacing-sm);
+            right: var(--spacing-sm);
+            width: 8px;
+            height: 8px;
+            background: var(--success-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .nav-menu {
+            padding: 0 var(--spacing-md);
+        }
+
+        .nav-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-md);
+            padding: 0 var(--spacing-md);
+        }
+
+        .nav-item {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--border-radius-md);
+            transition: all var(--transition-normal);
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-primary);
+            opacity: 0.1;
+            transition: left var(--transition-normal);
+        }
+
+        .nav-link:hover::before,
+        .nav-link.active::before {
+            left: 0;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+            transform: translateX(4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-link i {
+            font-size: 1.125rem;
+            width: 20px;
+            transition: transform var(--transition-normal);
+        }
+
+        .nav-link:hover i {
+            transform: scale(1.1);
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            background: var(--error-color);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            padding: var(--spacing-xl);
+            background: var(--bg-secondary);
+            min-height: 100vh;
+            transition: margin-left var(--transition-normal);
+        }
+
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-primary);
+            padding: var(--spacing-md) var(--spacing-xl);
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-xl);
+            position: sticky;
+            top: var(--spacing-xl);
+            z-index: 100;
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 400px;
+            margin: 0 var(--spacing-xl);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) 3rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            font-size: 1rem;
+            background: var(--bg-secondary);
+            transition: all var(--transition-normal);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.1);
+            background: var(--bg-primary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: var(--spacing-md);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+
+        .top-bar-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: var(--border-radius-md);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .action-btn .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--error-color);
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.125rem 0.375rem;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: var(--spacing-sm);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .theme-toggle:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            padding: var(--spacing-2xl);
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background: var(--gradient-primary);
+            opacity: 0.1;
+            border-radius: 0 var(--border-radius-xl) var(--border-radius-xl) 0;
+            transform: skewX(-15deg);
+        }
+
+        .welcome-section {
+            position: relative;
+            z-index: 2;
+        }
+
+        .welcome-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-sm);
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xl);
+            animation: fadeInUp 1s ease 0.2s both;
+        }
+
+        .welcome-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-xl);
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-2xl);
+        }
+
+        .stat-card {
+            background: var(--bg-primary);
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .stat-card:nth-child(2)::before {
+            background: var(--gradient-secondary);
+        }
+
+        .stat-card:nth-child(3)::before {
+            background: var(--gradient-tertiary);
+        }
+
+        .stat-card:nth-child(4)::before {
+            background: var(--gradient-success);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-md);
+            color: var(--primary-color);
+            transition: transform var(--transition-normal);
+        }
+
+        .stat-card:hover .stat-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-sm);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-change {
+            font-size: 0.75rem;
+            margin-top: var(--spacing-xs);
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--border-radius-sm);
+            font-weight: 500;
+        }
+
+        .stat-change.positive {
+            background: rgba(56, 161, 105, 0.1);
+            color: var(--success-color);
+        }
+
+        .stat-change.negative {
+            background: rgba(229, 62, 62, 0.1);
+            color: var(--error-color);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
+        }
+
+        .main-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+
+        .sidebar-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+
+        .card {
+            background: var(--bg-primary);
+            border-radius: var(--border-radius-xl);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            transition: all var(--transition-normal);
+            border: 1px solid var(--border-color);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .card-header {
+            padding: var(--spacing-xl) var(--spacing-xl) var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--spacing-md);
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+        }
+
+        .card-title {
+            font-size: 1.375rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .card-title i {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .card-action {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .btn {
+            padding: var(--spacing-md) var(--spacing-xl);
+            border: none;
+            border-radius: var(--border-radius-md);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 0.875rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left var(--transition-slow);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: var(--gradient-success);
+            color: var(--success-color);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-warning {
+            background: var(--gradient-warning);
+            color: var(--warning-color);
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-error {
+            background: var(--gradient-error);
+            color: var(--error-color);
+        }
+
+        .btn-error:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-sm {
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: 0.75rem;
+        }
+
+        .btn-lg {
+            padding: var(--spacing-lg) var(--spacing-2xl);
+            font-size: 1.125rem;
+        }
+
+        .card-content {
+            padding: var(--spacing-xl);
+        }
+
+        .empty-card-content {
+            padding: var(--spacing-2xl);
+        }
+
+        .event-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xl);
+            padding: var(--spacing-xl);
+            border-bottom: 1px solid var(--border-color);
+            transition: all var(--transition-normal);
+            position: relative;
+        }
+
+        .event-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-primary);
+            transform: scaleY(0);
+            transition: transform var(--transition-normal);
+        }
+
+        .event-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .event-item:hover {
+            background: var(--bg-secondary);
+            transform: translateX(8px);
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+        }
+
+        .event-date {
+            background: var(--gradient-primary);
+            color: white;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-lg);
+            text-align: center;
+            min-width: 90px;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-date::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+
+        .event-day {
+            font-size: 1.75rem;
+            font-weight: 700;
+            line-height: 1;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .event-month {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: var(--spacing-xs);
+        }
+
+        .event-details {
+            flex: 1;
+        }
+
+        .event-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+            color: var(--text-primary);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .event-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-lg);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-bottom: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        .event-meta span {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .event-description {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .event-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        .event-status {
+            position: absolute;
+            top: var(--spacing-md);
+            right: var(--spacing-md);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--border-radius-lg);
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .event-status.confirmed {
+            background: rgba(56, 161, 105, 0.1);
+            color: var(--success-color);
+        }
+
+        .event-status.pending {
+            background: rgba(214, 158, 46, 0.1);
+            color: var(--warning-color);
+        }
+
+        .event-status.cancelled {
+            background: rgba(229, 62, 62, 0.1);
+            color: var(--error-color);
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+            transition: all var(--transition-normal);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-item.unread {
+            background: linear-gradient(90deg, rgba(44, 82, 130, 0.05) 0%, transparent 100%);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .notification-item.unread::before {
+            content: '';
+            position: absolute;
+            top: var(--spacing-md);
+            right: var(--spacing-md);
+            width: 8px;
+            height: 8px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .notification-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+            font-size: 1.125rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .notification-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+            font-size: 0.9rem;
+        }
+
+        .notification-text {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .notification-time {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--border-radius-lg);
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .badge-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .badge-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .badge-error {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .badge-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 10000;
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-xl);
+        }
+
+        .modal-content {
+            background: var(--bg-primary);
+            border-radius: var(--border-radius-xl);
+            padding: var(--spacing-2xl);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            animation: slideInUp 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius-md);
+            transition: all var(--transition-normal);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+            transition: all var(--transition-normal);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.1);
+            background: var(--bg-primary);
+            transform: translateY(-2px);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-lg);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: flex-end;
+            margin-top: var(--spacing-2xl);
+            padding-top: var(--spacing-lg);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .floating-action {
+            position: fixed;
+            bottom: var(--spacing-2xl);
+            right: var(--spacing-2xl);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            font-size: 1.75rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-xl);
+            transition: all var(--transition-normal);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .floating-action:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 20px 40px rgba(44, 82, 130, 0.3);
+        }
+
+        .floating-action::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            animation: pulse-ring 2s infinite;
+        }
+
+        .toast {
+            position: fixed;
+            top: var(--spacing-xl);
+            right: var(--spacing-xl);
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-xl);
+            z-index: 10001;
+            min-width: 300px;
+            transform: translateX(400px);
+            transition: transform var(--transition-normal);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .toast-error {
+            border-left: 4px solid var(--error-color);
+        }
+
+        .toast-warning {
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .toast-info {
+            border-left: 4px solid var(--info-color);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10002;
+            backdrop-filter: blur(4px);
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--bg-tertiary);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-tertiary);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+            margin: var(--spacing-md) 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-primary);
+            border-radius: var(--border-radius-sm);
+            transition: width var(--transition-slow);
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background: var(--bg-primary);
+            min-width: 200px;
+            box-shadow: var(--shadow-xl);
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--border-color);
+            z-index: 1000;
+            top: 100%;
+            right: 0;
+            overflow: hidden;
+            animation: slideInDown 0.3s ease;
+        }
+
+        .dropdown.active .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: var(--spacing-md) var(--spacing-lg);
+            cursor: pointer;
+            transition: background var(--transition-normal);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg-secondary);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: var(--spacing-sm) 0;
+        }
+
+        .tab-navigation {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: var(--spacing-xl);
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: all var(--transition-normal);
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .tab-button::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            transition: width var(--transition-normal);
+        }
+
+        .tab-button:hover {
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+        }
+
+        .tab-button.active {
+            color: var(--primary-color);
+            background: var(--bg-secondary);
+        }
+
+        .tab-button.active::before {
+            width: 100%;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .calendar-widget {
+            background: var(--bg-primary);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .calendar-nav {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius-sm);
+            transition: all var(--transition-normal);
+        }
+
+        .calendar-nav:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--border-color);
+            border-radius: var(--border-radius-sm);
+            overflow: hidden;
+        }
+
+        .calendar-day {
+            background: var(--bg-primary);
+            padding: var(--spacing-sm);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+
+        .calendar-day:hover {
+            background: var(--bg-secondary);
+        }
+
+        .calendar-day.today {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .calendar-day.has-event {
+            background: rgba(44, 82, 130, 0.1);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .weather-widget {
+            background: var(--gradient-tertiary);
+            color: white;
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .weather-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .weather-temp {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .weather-desc {
+            opacity: 0.9;
+            font-size: 0.875rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+
+        .quick-action {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .quick-action:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .quick-action i {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-sm);
+            display: block;
+        }
+
+        .quick-action span {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .activity-feed {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: var(--spacing-md);
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .mini-stat {
+            background: var(--bg-primary);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius-lg);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .mini-stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .mini-stat-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform var(--transition-normal);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .top-bar {
+                padding: var(--spacing-md);
+            }
+
+            .search-container {
+                margin: 0 var(--spacing-md);
+            }
+
+            .welcome-title {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: var(--spacing-md);
+            }
+
+            .header {
+                padding: var(--spacing-xl);
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .card-content {
+                padding: var(--spacing-lg);
+            }
+
+            .event-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--spacing-md);
+            }
+
+            .event-date {
+                align-self: center;
+            }
+
+            .modal-content {
+                padding: var(--spacing-lg);
+                margin: var(--spacing-md);
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .floating-action {
+                bottom: var(--spacing-lg);
+                right: var(--spacing-lg);
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .top-bar {
+                flex-direction: column;
+                gap: var(--spacing-md);
+            }
+
+            .search-container {
+                margin: 0;
+                max-width: none;
+            }
+
+            .welcome-actions {
+                flex-direction: column;
+            }
+
+            .event-actions {
+                flex-direction: column;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        .animate-slide-in {
+            animation: slideInUp 0.3s ease;
+        }
+
+        .hover-scale {
+            transition: transform var(--transition-normal);
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        .gradient-text {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .shadow-glow {
+            box-shadow: 0 0 30px rgba(44, 82, 130, 0.3);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .scrollbar-thin {
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-color) transparent;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar scrollbar-thin">
+            <div class="sidebar-header">
+                <div class="church-logo" onclick="goHome()">
+                    <i class="fas fa-church"></i>
+                    <span class="church-name">Grace Community</span>
+                </div>
+                <div class="user-profile" onclick="toggleUserMenu()">
+                    <div class="user-avatar">JD</div>
+                    <div class="user-info">
+                        <h4>John Doe</h4>
+                        <p>Active Member</p>
+                    </div>
+                    <div class="user-status"></div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-section-title">Main</div>
+                    <div class="nav-item">
+                        <a href="#dashboard" class="nav-link active" data-page="dashboard">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#calendar" class="nav-link" data-page="calendar">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Calendar</span>
+                            <span class="nav-badge">3</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#events" class="nav-link" data-page="events">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Events</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Spiritual</div>
+                    <div class="nav-item">
+                        <a href="#sermons" class="nav-link" data-page="sermons">
+                            <i class="fas fa-play-circle"></i>
+                            <span>Sermons</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#prayers" class="nav-link" data-page="prayers">
+                            <i class="fas fa-praying-hands"></i>
+                            <span>Prayer Requests</span>
+                            <span class="nav-badge">12</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#bible-study" class="nav-link" data-page="bible-study">
+                            <i class="fas fa-book-open"></i>
+                            <span>Bible Study</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Community</div>
+                    <div class="nav-item">
+                        <a href="#groups" class="nav-link" data-page="groups">
+                            <i class="fas fa-users"></i>
+                            <span>Small Groups</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#forum" class="nav-link" data-page="forum">
+                            <i class="fas fa-comments"></i>
+                            <span>Community Forum</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#volunteer" class="nav-link" data-page="volunteer">
+                            <i class="fas fa-hands-helping"></i>
+                            <span>Volunteer</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#directory" class="nav-link" data-page="directory">
+                            <i class="fas fa-address-book"></i>
+                            <span>Member Directory</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Support</div>
+                    <div class="nav-item">
+                        <a href="#giving" class="nav-link" data-page="giving">
+                            <i class="fas fa-heart"></i>
+                            <span>Giving</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#media" class="nav-link" data-page="media">
+                            <i class="fas fa-photo-video"></i>
+                            <span>Media Gallery</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#resources" class="nav-link" data-page="resources">
+                            <i class="fas fa-download"></i>
+                            <span>Resources</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Account</div>
+                    <div class="nav-item">
+                        <a href="#profile" class="nav-link" data-page="profile">
+                            <i class="fas fa-user-cog"></i>
+                            <span>Profile Settings</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#notifications" class="nav-link" data-page="notifications">
+                            <i class="fas fa-bell"></i>
+                            <span>Notifications</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#help" class="nav-link" data-page="help">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Help & Support</span>
+                        </a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#logout" class="nav-link" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <button class="action-btn mobile-menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <div class="search-container">
+                    <input type="text" class="search-input" placeholder="Search events, members, sermons..." id="globalSearch">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+
+                <div class="top-bar-actions">
+                    <button class="action-btn" onclick="toggleNotifications()" title="Notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="action-btn" onclick="toggleMessages()" title="Messages">
+                        <i class="fas fa-envelope"></i>
+                        <span class="badge">5</span>
+                    </button>
+                    <button class="action-btn" onclick="toggleCalendar()" title="Calendar">
+                        <i class="fas fa-calendar"></i>
+                    </button>
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div class="dropdown">
+                        <button class="action-btn" onclick="toggleUserDropdown()">
+                            <i class="fas fa-user"></i>
+                        </button>
+                        <div class="dropdown-content" id="userDropdown">
+                            <a href="#profile" class="dropdown-item">
+                                <i class="fas fa-user"></i>
+                                Profile
+                            </a>
+                            <a href="#settings" class="dropdown-item">
+                                <i class="fas fa-cog"></i>
+                                Settings
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#logout" class="dropdown-item" onclick="logout()">
+                                                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header -->
+            <header class="header animate-fade-in">
+                <div class="welcome-section">
+                    <h1 class="welcome-title">Welcome back, John! 🙏</h1>
+                    <p class="welcome-subtitle">May God's blessings be upon you today. Here's what's happening in our community.</p>
+                    
+                    <div class="welcome-actions">
+                        <button class="btn btn-primary btn-lg" onclick="openModal('eventModal')">
+                            <i class="fas fa-plus"></i>
+                            Create Event
+                        </button>
+                        <button class="btn btn-secondary btn-lg" onclick="openModal('prayerModal')">
+                            <i class="fas fa-praying-hands"></i>
+                            Submit Prayer
+                        </button>
+                        <button class="btn btn-success btn-lg" onclick="showGivingModal()">
+                            <i class="fas fa-heart"></i>
+                            Give Now
+                        </button>
+                    </div>
+                    
+                    <div class="quick-stats">
+                        <div class="stat-card hover-scale">
+                            <div class="stat-icon">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <div class="stat-number">8</div>
+                            <div class="stat-label">Upcoming Events</div>
+                            <div class="stat-change positive">+2 this week</div>
+                        </div>
+                        <div class="stat-card hover-scale">
+                            <div class="stat-icon">
+                                <i class="fas fa-praying-hands"></i>
+                            </div>
+                            <div class="stat-number">24</div>
+                            <div class="stat-label">Active Prayers</div>
+                            <div class="stat-change positive">+5 answered</div>
+                        </div>
+                        <div class="stat-card hover-scale">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Small Groups</div>
+                            <div class="stat-change positive">+1 joined</div>
+                        </div>
+                        <div class="stat-card hover-scale">
+                            <div class="stat-icon">
+                                <i class="fas fa-hands-helping"></i>
+                            </div>
+                            <div class="stat-number">15</div>
+                            <div class="stat-label">Volunteer Hours</div>
+                            <div class="stat-change positive">+8 this month</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Grid -->
+            <div class="content-grid">
+                <!-- Main Panel -->
+                <div class="main-panel">
+                    <!-- Upcoming Events -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-calendar-alt"></i>
+                                Upcoming Events
+                            </h2>
+                            <div class="card-action">
+                                <button class="btn btn-secondary btn-sm" onclick="viewAllEvents()">
+                                    <i class="fas fa-list"></i>
+                                    View All
+                                </button>
+                                <button class="btn btn-primary" onclick="openModal('eventModal')">
+                                    <i class="fas fa-plus"></i>
+                                    Add Event
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <div class="event-day">25</div>
+                                    <div class="event-month">Jun</div>
+                                </div>
+                                <div class="event-details">
+                                    <h3 class="event-title">Sunday Worship Service</h3>
+                                    <div class="event-meta">
+                                        <span><i class="fas fa-clock"></i> 10:00 AM - 12:00 PM</span>
+                                        <span><i class="fas fa-map-marker-alt"></i> Main Sanctuary</span>
+                                        <span><i class="fas fa-users"></i> 150 attending</span>
+                                    </div>
+                                    <p class="event-description">Join us for our weekly worship service featuring Pastor Michael's sermon on "Walking in Faith Through Trials"</p>
+                                </div>
+                                <div class="event-actions">
+                                    <button class="btn btn-success btn-sm">
+                                        <i class="fas fa-check"></i>
+                                        RSVP'd
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-share"></i>
+                                        Share
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-calendar-plus"></i>
+                                        Add to Calendar
+                                    </button>
+                                </div>
+                                <div class="event-status confirmed">Confirmed</div>
+                            </div>
+
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <div class="event-day">28</div>
+                                    <div class="event-month">Jun</div>
+                                </div>
+                                <div class="event-details">
+                                    <h3 class="event-title">Youth Bible Study</h3>
+                                    <div class="event-meta">
+                                        <span><i class="fas fa-clock"></i> 7:00 PM - 8:30 PM</span>
+                                        <span><i class="fas fa-map-marker-alt"></i> Youth Center</span>
+                                        <span><i class="fas fa-users"></i> 25 attending</span>
+                                    </div>
+                                    <p class="event-description">Interactive Bible study for teens and young adults focusing on modern Christian living and faith challenges</p>
+                                </div>
+                                <div class="event-actions">
+                                    <button class="btn btn-primary btn-sm">
+                                        <i class="fas fa-calendar-plus"></i>
+                                        RSVP
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-info-circle"></i>
+                                        Details
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-comments"></i>
+                                        Discussion
+                                    </button>
+                                </div>
+                                <div class="event-status pending">Pending</div>
+                            </div>
+
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <div class="event-day">02</div>
+                                    <div class="event-month">Jul</div>
+                                </div>
+                                <div class="event-details">
+                                    <h3 class="event-title">Community Outreach Day</h3>
+                                    <div class="event-meta">
+                                        <span><i class="fas fa-clock"></i> 9:00 AM - 4:00 PM</span>
+                                        <span><i class="fas fa-map-marker-alt"></i> Downtown Community Center</span>
+                                        <span><i class="fas fa-users"></i> 45 volunteers needed</span>
+                                    </div>
+                                    <p class="event-description">Join us in serving our community through food distribution, clothing drive, and fellowship with local families</p>
+                                </div>
+                                <div class="event-actions">
+                                    <button class="btn btn-warning btn-sm">
+                                        <i class="fas fa-hands-helping"></i>
+                                        Volunteer
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-share"></i>
+                                        Share
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-truck"></i>
+                                        Transportation
+                                    </button>
+                                </div>
+                                <div class="event-status confirmed">Confirmed</div>
+                            </div>
+
+                            <div class="event-item">
+                                <div class="event-date">
+                                    <div class="event-day">15</div>
+                                    <div class="event-month">Jul</div>
+                                </div>
+                                <div class="event-details">
+                                    <h3 class="event-title">Summer Family Retreat</h3>
+                                    <div class="event-meta">
+                                        <span><i class="fas fa-clock"></i> Friday 6:00 PM - Sunday 3:00 PM</span>
+                                        <span><i class="fas fa-map-marker-alt"></i> Mountain View Camp</span>
+                                        <span><i class="fas fa-users"></i> 85 registered</span>
+                                    </div>
+                                    <p class="event-description">A weekend of fellowship, worship, and fun activities for the whole family in God's beautiful creation</p>
+                                </div>
+                                <div class="event-actions">
+                                    <button class="btn btn-primary btn-sm">
+                                        <i class="fas fa-ticket-alt"></i>
+                                        Register
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-info-circle"></i>
+                                        Details
+                                    </button>
+                                    <button class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-car"></i>
+                                        Carpools
+                                    </button>
+                                </div>
+                                <div class="event-status confirmed">Confirmed</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Sermons -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-play-circle"></i>
+                                Recent Sermons
+                            </h2>
+                            <div class="card-action">
+                                <button class="btn btn-secondary btn-sm" onclick="viewSermonArchive()">
+                                    <i class="fas fa-archive"></i>
+                                    View Archive
+                                </button>
+                                <button class="btn btn-primary" onclick="requestSermon()">
+                                    <i class="fas fa-microphone"></i>
+                                    Request Topic
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="tab-navigation">
+                                <button class="tab-button active" onclick="switchTab('recent-sermons')">Recent</button>
+                                <button class="tab-button" onclick="switchTab('popular-sermons')">Popular</button>
+                                <button class="tab-button" onclick="switchTab('series-sermons')">Series</button>
+                                <button class="tab-button" onclick="switchTab('guest-sermons')">Guest Speakers</button>
+                            </div>
+
+                            <div class="tab-content active" id="recent-sermons">
+                                <div class="sermon-grid">
+                                    <div class="sermon-card">
+                                        <div class="sermon-thumbnail">
+                                            <i class="fas fa-play"></i>
+                                            <div class="sermon-duration">45:32</div>
+                                        </div>
+                                        <div class="sermon-info">
+                                            <h3 class="sermon-title">Walking in Faith Through Trials</h3>
+                                            <div class="sermon-meta">
+                                                <span><i class="fas fa-user"></i> Pastor Michael Johnson</span>
+                                                <span><i class="fas fa-calendar"></i> June 18, 2025</span>
+                                                <span><i class="fas fa-eye"></i> 234 views</span>
+                                            </div>
+                                            <p class="sermon-description">Discover how to maintain unwavering faith even in life's greatest challenges through biblical wisdom and practical application.</p>
+                                            <div class="sermon-actions">
+                                                <button class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-play"></i>
+                                                    Watch
+                                                </button>
+                                                <button class="btn btn-secondary btn-sm">
+                                                    <i class="fas fa-headphones"></i>
+                                                    Listen
+                                                </button>
+                                                <button class="btn btn-secondary btn-sm">
+                                                    <i class="fas fa-download"></i>
+                                                    Download
+                                                </button>
+                                                <button class="btn btn-secondary btn-sm">
+                                                    <i class="fas fa-file-alt"></i>
+                                                    Notes
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="sermon-card">
+                                        <div class="sermon-thumbnail">
+                                            <i class="fas fa-play"></i>
+                                            <div class="sermon-duration">38:15</div>
+                                        </div>
+                                        <div class="sermon-info">
+                                            <h3 class="sermon-title">The Power of Community in Christ</h3>
+                                            <div class="sermon-meta">
+                                                <span><i class="fas fa-user"></i> Pastor Sarah Williams</span>
+                                                <span><i class="fas fa-calendar"></i> June 11, 2025</span>
+                                                <span><i class="fas fa-eye"></i> 189 views</span>
+                                            </div>
+                                            <p class="sermon-description">Explore the importance of Christian fellowship and building stronger bonds within our church community.</p>
+                                            <div class="sermon-actions">
+                                                <button class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-play"></i>
+                                                    Watch
+                                                </button>
+                                                <button class="btn btn-secondary btn-sm">
+                                                    <i class="fas fa-headphones"></i>
+                                                    Listen
+                                                </button>
+                                                <button class="btn btn-secondary btn-sm">
+                                                    <i class="fas fa-bookmark"></i>
+                                                    Save
+                                                </button>
+                                                <button class="btn btn-secondary btn-sm">
+                                                    <i class="fas fa-share"></i>
+                                                    Share
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Community Forum -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-comments"></i>
+                                Community Forum
+                            </h2>
+                            <div class="card-action">
+                                <button class="btn btn-secondary btn-sm" onclick="viewAllPosts()">
+                                    <i class="fas fa-list"></i>
+                                    View All
+                                </button>
+                                <button class="btn btn-primary" onclick="openModal('forumModal')">
+                                    <i class="fas fa-plus"></i>
+                                    New Post
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="tab-navigation">
+                                <button class="tab-button active" onclick="switchTab('recent-posts')">Recent</button>
+                                <button class="tab-button" onclick="switchTab('testimonies')">Testimonies</button>
+                                <button class="tab-button" onclick="switchTab('questions')">Questions</button>
+                                <button class="tab-button" onclick="switchTab('announcements')">Announcements</button>
+                                <button class="tab-button" onclick="switchTab('prayer-wall')">Prayer Wall</button>
+                            </div>
+
+                            <div class="tab-content active" id="recent-posts">
+                                <div class="forum-posts">
+                                    <div class="forum-post">
+                                        <div class="post-header">
+                                            <div class="post-author">
+                                                <div class="post-avatar">MJ</div>
+                                                <div class="post-author-info">
+                                                    <div class="post-name">Mary Johnson</div>
+                                                    <div class="post-time">2 hours ago</div>
+                                                </div>
+                                            </div>
+                                            <div class="post-category">Testimony</div>
+                                        </div>
+                                        <h3 class="post-title">God's Faithfulness in Difficult Times</h3>
+                                        <p class="post-content">I wanted to share how God has been faithful to our family during my husband's recent illness. Your prayers and support have meant the world to us, and I'm happy to report that he's making a full recovery. Praise God! 🙏</p>
+                                        <div class="post-actions">
+                                            <div class="post-stats">
+                                                <button class="reaction-btn">
+                                                    <i class="fas fa-heart"></i>
+                                                    <span>24</span>
+                                                </button>
+                                                <button class="reaction-btn">
+                                                    <i class="fas fa-praying-hands"></i>
+                                                    <span>18</span>
+                                                </button>
+                                                <button class="reaction-btn">
+                                                    <i class="fas fa-comment"></i>
+                                                    <span>8</span>
+                                                </button>
+                                                <button class="reaction-btn">
+                                                    <i class="fas fa-share"></i>
+                                                    <span>3</span>
+                                                </button>
+                                            </div>
+                                            <button class="btn btn-secondary btn-sm">
+                                                <i class="fas fa-comment"></i>
+                                                Comment
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="forum-post">
+                                        <div class="post-header">
+                                            <div class="post-author">
+                                                <div class="post-avatar">RB</div>
+                                                <div class="post-author-info">
+                                                    <div class="post-name">Robert Brown</div>
+                                                    <div class="post-time">5 hours ago</div>
+                                                </div>
+                                            </div>
+                                            <div class="post-category">Question</div>
+                                        </div>
+                                        <h3 class="post-title">Bible Study Resources for New Christians</h3>
+                                        <p class="post-content">Hi everyone! I'm looking for recommendations for Bible study materials that would be good for someone who just accepted Christ. Any suggestions for beginner-friendly resources that explain the basics of faith?</p>
+                                        <div class="post-actions">
+                                            <div class="post-stats">
+                                                <button class="reaction-btn">
+                                                    <i class="fas fa-heart"></i>
+                                                    <span>12</span>
+                                                </button>
+                                                <button class="reaction-btn">
+                                                    <i class="fas fa-comment"></i>
+                                                    <span>15</span>
+                                                </button>
+                                                <button class="reaction-btn">
+                                                    <i class="fas fa-share"></i>
+                                                    <span>2</span>
+                                                </button>
+                                            </div>
+                                            <button class="btn btn-secondary btn-sm">
+                                                <i class="fas fa-comment"></i>
+                                                Comment
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Panel -->
+                <div class="sidebar-panel">
+                    <!-- Quick Actions Widget -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-bolt"></i>
+                                Quick Actions
+                            </h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="quick-actions">
+                                <a href="#prayer" class="quick-action" onclick="openModal('prayerModal')">
+                                    <i class="fas fa-praying-hands"></i>
+                                    <span>Submit Prayer</span>
+                                </a>
+                                <a href="#giving" class="quick-action" onclick="showGivingModal()">
+                                    <i class="fas fa-heart"></i>
+                                    <span>Give</span>
+                                </a>
+                                <a href="#volunteer" class="quick-action" onclick="showVolunteerOpportunities()">
+                                    <i class="fas fa-hands-helping"></i>
+                                    <span>Volunteer</span>
+                                </a>
+                                <a href="#events" class="quick-action" onclick="openModal('eventModal')">
+                                    <i class="fas fa-calendar-plus"></i>
+                                    <span>Add Event</span>
+                                </a>
+                                <a href="#directory" class="quick-action" onclick="showMemberDirectory()">
+                                    <i class="fas fa-address-book"></i>
+                                    <span>Directory</span>
+                                </a>
+                                <a href="#resources" class="quick-action" onclick="showResources()">
+                                    <i class="fas fa-download"></i>
+                                    <span>Resources</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calendar Widget -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-calendar"></i>
+                                Calendar
+                            </h2>
+                            <div class="card-action">
+                                <button class="btn btn-secondary btn-sm" onclick="viewFullCalendar()">
+                                    <i class="fas fa-expand"></i>
+                                    Full View
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="calendar-widget">
+                                <div class="calendar-header">
+                                    <button class="calendar-nav" onclick="previousMonth()">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <h3 id="currentMonth">June 2025</h3>
+                                    <button class="calendar-nav" onclick="nextMonth()">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="calendar-grid" id="calendarGrid">
+                                    <!-- Calendar days will be generated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weather Widget -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-cloud-sun"></i>
+                                Weather
+                            </h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="weather-widget">
+                                <div class="weather-icon">
+                                    <i class="fas fa-sun"></i>
+                                </div>
+                                <div class="weather-temp">24°C</div>
+                                <div class="weather-desc">Sunny and Clear</div>
+                                <div class="weather-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Thika, Kenya
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-bell"></i>
+                                Notifications
+                                <span class="badge badge-primary">5</span>
+                            </h2>
+                            <div class="card-action">
+                                <button class="btn btn-secondary btn-sm" onclick="markAllRead()">
+                                    <i class="fas fa-check-double"></i>
+                                    Mark All Read
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <div class="notification-list scrollbar-thin">
+                                <div class="notification-item unread">
+                                    <div class="notification-icon">
+                                        <i class="fas fa-calendar"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">Event Reminder</div>
+                                        <div class="notification-text">Youth Bible Study starts in 2 hours</div>
+                                        <div class="notification-time">
+                                            <i class="fas fa-clock"></i>
+                                            30 minutes ago
+                                        </div>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <button class="btn btn-primary btn-sm">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        <button class="btn btn-secondary btn-sm">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="notification-item unread">
+                                    <div class="notification-icon">
+                                        <i class="fas fa-praying-hands"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">Prayer Request Update</div>
+                                        <div class="notification-text">Sarah's prayer request has been answered! 🙏</div>
+                                        <div class="notification-time">
+                                            <i class="fas fa-clock"></i>
+                                            2 hours ago
+                                        </div>
+                                    </div>
+                                    <div class="notification-actions">
+                                        <button class="btn btn-success btn-sm">
+                                            <i class="fas fa-heart"></i>
+                                        </button>
+                                        <button class="btn btn-secondary btn-sm">
+                                            <i class="fas fa-comment"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="notification-item">
+                                    <div class="notification-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">Small Group Update</div>
+                                        <div class="notification-text">New member Emily joined your Bible Study group</div>
+                                        <div class="notification-time">
+                                            <i class="fas fa-clock"></i>
+                                            1 day ago
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="notification-item">
+                                    <div class="notification-icon">
+                                        <i class="fas fa-heart"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">Donation Received</div>
+                                        <div class="notification-text">Thank you for your generous contribution of $150!</div>
+                                        <div class="notification-time">
+                                            <i class="fas fa-clock"></i>
+                                            2 days ago
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="notification-item">
+                                    <div class="notification-icon">
+                                        <i class="fas fa-microphone"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <div class="notification-title">New Sermon Available</div>
+                                        <div class="notification-text">Pastor Michael's latest sermon "Faith in Action" is now available</div>
+                                        <div class="notification-time">
+                                            <i class="fas fa-clock"></i>
+                                            3 days ago
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-history"></i>
+                                Recent Activity
+                            </h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="activity-feed scrollbar-thin">
+                                <div class="activity-item">
+                                    <div class="activity-avatar">JD</div>
+                                    <div class="activity-content">
+                                        <div class="activity-text">You joined the <strong>Community Outreach</strong> volunteer group</div>
+                                        <div class="activity-time">2 hours ago</div>
+                                    </div>
+                                </div>
+
+                                <div class="activity-item">
+                                    <div class="activity-avatar">SM</div>
+                                    <div class="activity-content">
+                                        <div class="activity-text"><strong>Sarah Miller</strong> thanked you for your prayers</div>
+                                        <div class="activity-time">5 hours ago</div>
+                                    </div>
+                                </div>
+
+                                <div class="activity-item">
+                                    <div class="activity-avatar">JD</div>
+                                    <div class="activity-content">
+                                        <div class="activity-text">You submitted a prayer request for <strong>Family Health</strong></div>
+                                        <div class="activity-time">1 day ago</div>
+                                    </div>
+                                </div>
+
+                                <div class="activity-item">
+                                    <div class="activity-avatar">MW</div>
+                                    <div class="activity-content">
+                                        <div class="activity-text"><strong>Michael Williams</strong> invited you to join <strong>Men's Bible Study</strong></div>
+                                        <div class="activity-time">2 days ago</div>
+                                    </div>
+                                </div>
+
+                                <div class="activity-item">
+                                    <div class="activity-avatar">JD</div>
+                                    <div class="activity-content">
+                                        <div class="activity-text">You donated <strong>$100</strong> to the Building Fund</div>
+                                        <div class="activity-time">3 days ago</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ministry Stats -->
+                    <div class="card animate-fade-in">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-chart-bar"></i>
+                                Ministry Stats
+                            </h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="stats-grid">
+                                <div class="mini-stat">
+                                    <div class="mini-stat-value">156</div>
+                                    <div class="mini-stat-label">Total Members</div>
+                                </div>
+                                <div class="mini-stat">
+                                    <div class="mini-stat-value">23</div>
+                                    <div class="mini-stat-label">Small Groups</div>
+                                </div>
+                                <div class="mini-stat">
+                                    <div class="mini-stat-value">45</div>
+                                    <div class="mini-stat-label">Volunteers</div>
+                                </div>
+                                <div class="mini-stat">
+                                    <div class="mini-stat-value">89%</div>
+                                    <div class="mini-stat-label">Attendance Rate</div>
+                                </div>
+                            </div>
+                            
+                            <div class="progress-section">
+                                <h4>Monthly Goals</h4>
+                                <div class="goal-item">
+                                    <div class="goal-label">
+                                        <span>Prayer Requests</span>
+                                        <span>24/30</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 80%"></div>
+                                    </div>
+                                </div>
+                                <div class="goal-item">
+                                    <div class="goal-label">
+                                        <span>Volunteer Hours</span>
+                                        <span>120/150</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 80%"></div>
+                                    </div>
+                                </div>
+                                <div class="goal-item">
+                                    <div class="goal-label">
+                                        <span>Community Outreach</span>
+                                        <span>8/10</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 80%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Event Modal -->
+    <div class="modal" id="eventModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Event</h3>
+                <button class="modal-close" onclick="closeModal('eventModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="eventForm">
+                <div class="form-group">
+                    <label class="form-label">Event Title *</label>
+                    <input type="text" class="form-input" name="title" placeholder="Enter event title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Event Type</label>
+                    <select class="form-select" name="type">
+                        <option value="worship">Worship Service</option>
+                        <option value="bible-study">Bible Study</option>
+                        <option value="fellowship">Fellowship</option>
+                        <option value="outreach">Community Outreach</option>
+                        <option value="youth">Youth Event</option>
+                        <option value="children">Children's Event</option>
+                        <option value="special">Special Event</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" name="description" placeholder="Describe your event..." rows="4"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Start Date *</label>
+                        <input type="date" class="form-input" name="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Start Time *</label>
+                        <input type="time" class="form-input" name="startTime" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">End Date</label>
+                        <input type="date" class="form-input" name="endDate">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">End Time</label>
+                        <input type="time" class="form-input" name="endTime">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Location *</label>
+                    <input type="text" class="form-input" name="location" placeholder="Event location" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Expected Attendance</label>
+                        <input type="number" class="form-input" name="expectedAttendance" placeholder="Number of attendees" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Registration Required</label>
+                        <select class="form-select" name="registrationRequired">
+                            <option value="no">No Registration</option>
+                            <option value="yes">Registration Required</option>
+                            <option value="rsvp">RSVP Only</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Special Requirements</label>
+                    <textarea class="form-textarea" name="requirements" placeholder="Any special requirements, equipment, or notes..." rows="3"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('eventModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Prayer Modal -->
+    <div class="modal" id="prayerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Submit Prayer Request</h3>
+                <button class="modal-close" onclick="closeModal('prayerModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="prayerForm">
+                <div class="form-group">
+                    <label class="form-label">Prayer Request *</label>
+                    <textarea class="form-textarea" name="request" placeholder="Share your prayer request..." required style="min-height: 120px;"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Category</label>
+                        <select class="form-select" name="category">
+                            <option value="health">Health & Healing</option>
+                            <option value="family">Family</option>
+                            <option value="work">Work & Career</option>
+                            <option value="spiritual">Spiritual Growth</option>
+                            <option value="relationships">Relationships</option>
+                            <option value="finances">Finances</option>
+                            <option value="guidance">Guidance & Wisdom</option>
+                            <option value="thanksgiving">Thanksgiving</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Urgency Level</label>
+                        <select class="form-select" name="urgency">
+                            <option value="normal">Normal</option>
+                            <option value="urgent">Urgent</option>
+                            <option value="ongoing">Ongoing</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Privacy Level</label>
+                    <select class="form-select" name="privacy">
+                        <option value="public">Public - Visible to all members</option>
+                        <option value="leadership">Leadership Only</option>
+                        <option value="anonymous">Anonymous Request</option>
+                        <option value="private">Private - Pastor Only</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Follow-up Preferences</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="followUp" value="email">
+                            <span>Email updates</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="followUp" value="phone">
+                            <span>Phone call</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="followUp" value="visit">
+                            <span>Personal visit</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('prayerModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Submit Prayer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Forum Modal -->
+    <div class="modal" id="forumModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Forum Post</h3>
+                <button class="modal-close" onclick="closeModal('forumModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="forumForm">
+                <div class="form-group">
+                    <label class="form-label">Post Title *</label>
+                    <input type="text" class="form-input" name="title" placeholder="Enter post title" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Category *</label>
+                    <select class="form-select" name="category" required>
+                        <option value="">Select a category</option>
+                        <option value="general">General Discussion</option>
+                        <option value="testimony">Testimony</option>
+                        <option value="question">Question</option>
+                        <option value="announcement">Announcement</option>
+                        <option value="prayer">Prayer Request</option>
+                        <option value="bible-study">Bible Study</option>
+                        <option value="events">Events</option>
+                        <option value="resources">Resources</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Content *</label>
+                    <textarea class="form-textarea" name="content" placeholder="Share your thoughts..." required style="min-height: 150px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Tags (Optional)</label>
+                    <input type="text" class="form-input" name="tags" placeholder="Add tags separated by commas">
+                    <small class="form-help">Example: faith, community, worship</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Visibility</label>
+                    <select class="form-select" name="visibility">
+                        <option value="public">Public - All members can see</option>
+                        <option value="members">Members Only</option>
+                        <option value="leadership">Leadership Only</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('forumModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Giving Modal -->
+    <div class="modal" id="givingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Make a Donation</h3>
+                <button class="modal-close" onclick="closeModal('givingModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="givingForm">
+                <div class="form-group">
+                    <label class="form-label">Donation Type</label>
+                    <select class="form-select" name="donationType">
+                        <option value="tithe">Tithe</option>
+                        <option value="offering">General Offering</option>
+                        <option value="missions">Missions</option>
+                        <option value="building">Building Fund</option>
+                        <option value="youth">Youth Ministry</option>
+                        <option value="children">Children's Ministry</option>
+                        <option value="outreach">Community Outreach</option>
+                        <option value="special">Special Project</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Amount *</label>
+                    <div class="amount-selector">
+                        <div class="amount-buttons">
+                            <button type="button" class="amount-btn" onclick="selectAmount(25)">$25</button>
+                            <button type="button" class="amount-btn" onclick="selectAmount(50)">$50</button>
+                            <button type="button" class="amount-btn" onclick="selectAmount(100)">$100</button>
+                            <button type="button" class="amount-btn" onclick="selectAmount(250)">$250</button>
+                            <button type="button" class="amount-btn" onclick="selectAmount(500)">$500</button>
+                            <button type="button" class="amount-btn" onclick="selectAmount(0)">Other</button>
+                        </div>
+                        <input type="number" class="form-input" name="amount" placeholder="Enter custom amount" min="1" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Frequency</label>
+                    <select class="form-select" name="frequency">
+                        <option value="once">One-time</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="annually">Annually</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Payment Method</label>
+                    <select class="form-select" name="paymentMethod">
+                        <option value="card">Credit/Debit Card</option>
+                        <option value="bank">Bank Transfer</option>
+                        <option value="paypal">PayPal</option>
+                        <option value="mpesa">M-Pesa</option>
+                        <option value="crypto">Cryptocurrency</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Special Notes (Optional)</label>
+                    <textarea class="form-textarea" name="notes" placeholder="Add any special instructions or dedication..." rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="anonymous" value="1">
+                        <span>Make this donation anonymous</span>
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('givingModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-heart"></i>
+                        Proceed to Payment
+                    </button>
+                </div>
+
+                <div class="security-notice">
+                    <i class="fas fa-lock"></i>
+                    <small>Secure donation processing powered by industry-standard encryption</small>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast toast-success" id="successToast">
+        <div class="toast-content">
+            <i class="fas fa-check-circle"></i>
+            <span id="successMessage">Operation completed successfully!</span>
+        </div>
+        <button class="toast-close" onclick="hideToast('successToast')">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <div class="toast toast-error" id="errorToast">
+        <div class="toast-content">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="errorMessage">An error occurred. Please try again.</span>
+        </div>
+        <button class="toast-close" onclick="hideToast('errorToast')">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p style="color: white; margin-top: 1rem;">Loading...</p>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="floating-action pulse-animation" onclick="openModal('prayerModal')" title="Quick Prayer Request">
+        <i class="fas fa-praying-hands"></i>
+    </button>
+
+    <script>
+        // Global variables
+        let currentUser = {
+            id: 'user123',
+            name: 'John Doe',
+            email: 'john.doe@email.com',
+            role: 'member',
+            avatar: 'JD'
+        };
+
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        let sidebarOpen = false;
+        let currentPage = 'dashboard';
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            loadDashboardData();
+            initializeCalendar();
+            setupEventListeners();
+            applyTheme(currentTheme);
+        });
+
+        // Application initialization
+        function initializeApp() {
+            console.log('Grace Community Church Dashboard - Initializing...');
+            
+            // Set up mobile menu
+            if (window.innerWidth <= 1024) {
+                setupMobileMenu();
+            }
+            
+            // Initialize tooltips
+            initializeTooltips();
+            
+            // Set up auto-save for forms
+            setupAutoSave();
+            
+            // Initialize real-time features
+            initializeRealTimeUpdates();
+            
+            console.log('Dashboard initialized successfully! 🙏');
+        }
+
+        // Modal functionality
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+                
+                // Focus on first input
+                const firstInput = modal.querySelector('input, textarea, select');
+                if (firstInput) {
+                    setTimeout(() => firstInput.focus(), 100);
+                }
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+                
+                // Reset form if exists
+                const form = modal.querySelector('form');
+                if (form) {
+                    form.reset();
+                }
+            }
+        }
+
+        // Enhanced navigation functionality
+        function switchPage(page) {
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Add active class to current page
+            const currentLink = document.querySelector(`[data-page="${page}"]`);
+            if (currentLink) {
+                currentLink.classList.add('active');
+            }
+            
+            currentPage = page;
+            loadPageContent(page);
+        }
+
+        function loadPageContent(page) {
+            showLoading();
+            
+            // Simulate loading different page content
+            setTimeout(() => {
+                hideLoading();
+                showToast('success', `${page.charAt(0).toUpperCase() + page.slice(1)} page loaded successfully!`);
+            }, 1000);
+        }
+
+        // Tab functionality
+        function switchTab(tabId) {
+            // Get the parent container
+            const container = event.target.closest('.card');
+            if (!container) return;
+            
+            // Hide all tab contents in this container
+            container.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons in this container
+            container.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            const selectedTab = document.getElementById(tabId);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Theme functionality
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(currentTheme);
+            localStorage.setItem('theme', currentTheme);
+        }
+
+        function applyTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+            const themeIcon = document.querySelector('.theme-toggle i');
+            if (themeIcon) {
+                themeIcon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+            }
+        }
+
+        // Sidebar functionality
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebarOpen = !sidebarOpen;
+            
+            if (sidebarOpen) {
+                sidebar.classList.add('open');
+            } else {
+                sidebar.classList.remove('open');
+            }
+        }
+
+        // Dropdown functionality
+        function toggleUserDropdown() {
+            const dropdown = document.querySelector('#userDropdown').parentElement;
+            dropdown.classList.toggle('active');
+        }
+
+        function toggleNotifications() {
+            showToast('info', 'Notifications panel would open here');
+        }
+
+        function toggleMessages() {
+            showToast('info', 'Messages panel would open here');
+        }
+
+        function toggleCalendar() {
+            showToast('info', 'Calendar view would open here');
+        }
+
+        // Calendar functionality
+        function initializeCalendar() {
+            const calendarGrid = document.getElementById('calendarGrid');
+            if (!calendarGrid) return;
+            
+            const currentDate = new Date();
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            // Generate calendar days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            let calendarHTML = '';
+            
+            // Add day headers
+            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayHeaders.forEach(day => {
+                calendarHTML += `<div class="calendar-day-header">${day}</div>`;
+            });
+            
+            // Add empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                calendarHTML += '<div class="calendar-day empty"></div>';
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const isToday = day === currentDate.getDate() && 
+                               month === currentDate.getMonth() && 
+                               year === currentDate.getFullYear();
+                
+                const hasEvent = [18, 25, 28].includes(day); // Sample event days
+                
+                let classes = 'calendar-day';
+                if (isToday) classes += ' today';
+                if (hasEvent) classes += ' has-event';
+                
+                calendarHTML += `<div class="${classes}" onclick="selectCalendarDay(${day})">${day}</div>`;
+            }
+            
+            calendarGrid.innerHTML = calendarHTML;
+        }
+
+        function selectCalendarDay(day) {
+            showToast('info', `Selected day: ${day}`);
+        }
+
+        function previousMonth() {
+            showToast('info', 'Previous month functionality would be implemented here');
+        }
+
+        function nextMonth() {
+            showToast('info', 'Next month functionality would be implemented here');
+        }
+
+        // Form handling
+        function setupFormHandlers() {
+            // Event form
+            const eventForm = document.getElementById('eventForm');
+            if (eventForm) {
+                eventForm.addEventListener('submit', handleEventSubmit);
+            }
+            
+            // Prayer form
+            const prayerForm = document.getElementById('prayerForm');
+            if (prayerForm) {
+                prayerForm.addEventListener('submit', handlePrayerSubmit);
+            }
+            
+            // Forum form
+            const forumForm = document.getElementById('forumForm');
+            if (forumForm) {
+                forumForm.addEventListener('submit', handleForumSubmit);
+            }
+            
+            // Giving form
+            const givingForm = document.getElementById('givingForm');
+            if (givingForm) {
+                givingForm.addEventListener('submit', handleGivingSubmit);
+            }
+        }
+
+        function handleEventSubmit(e) {
+            e.preventDefault();
+            showLoading();
+            
+            const formData = new FormData(e.target);
+            const eventData = Object.fromEntries(formData);
+            
+            // Simulate API call
+            setTimeout(() => {
+                hideLoading();
+                closeModal('eventModal');
+                showToast('success', 'Event created successfully!');
+                
+                // Add to events list (in real app, this would refresh from server)
+                addEventToList(eventData);
+            }, 1500);
+        }
+
+        function handlePrayerSubmit(e) {
+            e.preventDefault();
+            showLoading();
+            
+            const formData = new FormData(e.target);
+            const prayerData = Object.fromEntries(formData);
+            
+            setTimeout(() => {
+                hideLoading();
+                closeModal('prayerModal');
+                showToast('success', 'Prayer request submitted successfully!');
+            }, 1000);
+        }
+
+        function handleForumSubmit(e) {
+            e.preventDefault();
+            showLoading();
+            
+            const formData = new FormData(e.target);
+            const postData = Object.fromEntries(formData);
+            
+            setTimeout(() => {
+                hideLoading();
+                closeModal('forumModal');
+                showToast('success', 'Forum post created successfully!');
+            }, 1000);
+        }
+
+        function handleGivingSubmit(e) {
+            e.preventDefault();
+            showLoading();
+            
+            const formData = new FormData(e.target);
+            const givingData = Object.fromEntries(formData);
+            
+            setTimeout(() => {
+                hideLoading();
+                closeModal('givingModal');
+                showToast('success', 'Redirecting to secure payment processor...');
+            }, 1500);
+        }
+
+        // Amount selection for giving
+        function selectAmount(amount) {
+            const amountButtons = document.querySelectorAll('.amount-btn');
+            const amountInput = document.querySelector('input[name="amount"]');
+            
+            // Remove active class from all buttons
+            amountButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            if (amount > 0) {
+                amountInput.value = amount;
+            } else {
+                amountInput.value = '';
+                amountInput.focus();
+            }
+        }
+
+        // Toast notifications
+        function showToast(type, message) {
+            const toastId = type === 'success' ? 'successToast' : 'errorToast';
+            const messageId = type === 'success' ? 'successMessage' : 'errorMessage';
+            
+            const toast = document.getElementById(toastId);
+            const messageElement = document.getElementById(messageId);
+            
+            if (toast && messageElement) {
+                messageElement.textContent = message;
+                toast.classList.add('show');
+                
+                // Auto hide after 5 seconds
+                setTimeout(() => {
+                    hideToast(toastId);
+                }, 5000);
+            }
+        }
+
+        function hideToast(toastId) {
+            const toast = document.getElementById(toastId);
+            if (toast) {
+                toast.classList.remove('show');
+            }
+        }
+
+        // Loading functionality
+        function showLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.style.display = 'flex';
+            }
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        }
+
+        // Search functionality
+        function setupGlobalSearch() {
+            const searchInput = document.getElementById('globalSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', debounce(handleSearch, 300));
+            }
+        }
+
+        function handleSearch(e) {
+            const query = e.target.value.toLowerCase();
+            if (query.length > 2) {
+                // Simulate search
+                console.log('Searching for:', query);
+                // In real
+        // Search functionality (continued)
+        function handleSearch(e) {
+            const query = e.target.value.toLowerCase();
+            if (query.length > 2) {
+                // Simulate search
+                console.log('Searching for:', query);
+                // In real app, this would make API call
+                showSearchResults(query);
+            }
+        }}}
+
+        function showSearchResults(query) {
+            // Mock search results
+            const results = [
+                { type: 'event', title: 'Sunday Worship Service', description: 'Weekly worship service' },
+                { type: 'member', title: 'John Smith', description: 'Active member since 2020' },
+                { type: 'sermon', title: 'Walking in Faith', description: 'Recent sermon by Pastor Michael' }
+            ];
+            
+            showToast('info', `Found ${results.length} results for "${query}"`);
+        }
+
+        // Notification management
+        function markAllRead() {
+            const unreadItems = document.querySelectorAll('.notification-item.unread');
+            unreadItems.forEach(item => {
+                item.classList.remove('unread');
+            });
+            
+            // Update badge count
+            const badge = document.querySelector('.card-title .badge');
+            if (badge) {
+                badge.textContent = '0';
+                badge.style.display = 'none';
+            }
+            
+            showToast('success', 'All notifications marked as read');
+        }
+
+        function markNotificationAsRead(notificationElement) {
+            notificationElement.classList.remove('unread');
+            
+            // Update notification count
+            const badge = document.querySelector('.card-title .badge');
+            if (badge) {
+                let count = parseInt(badge.textContent);
+                if (count > 0) {
+                    badge.textContent = count - 1;
+                    if (count - 1 === 0) {
+                        badge.style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        // Auto-save functionality
+        function setupAutoSave() {
+            const autoSaveFields = document.querySelectorAll('input, textarea, select');
+            autoSaveFields.forEach(field => {
+                field.addEventListener('change', function() {
+                    if (this.name) {
+                        localStorage.setItem(`autosave_${this.name}`, this.value);
+                        console.log('Auto-saved:', this.name, this.value);
+                    }
+                });
+            });
+        }
+
+        function loadAutoSavedData() {
+            const autoSaveFields = document.querySelectorAll('input, textarea, select');
+            autoSaveFields.forEach(field => {
+                if (field.name) {
+                    const savedValue = localStorage.getItem(`autosave_${field.name}`);
+                    if (savedValue) {
+                        field.value = savedValue;
+                    }
+                }
+            });
+        }
+
+        // Real-time updates simulation
+        function initializeRealTimeUpdates() {
+            // Simulate new notifications
+            setInterval(() => {
+                if (Math.random() > 0.95) {
+                    addNewNotification();
+                }
+            }, 30000); // Check every 30 seconds
+
+            // Update online status
+            setInterval(updateOnlineStatus, 60000); // Update every minute
+
+            // Refresh stats
+            setInterval(refreshStats, 300000); // Refresh every 5 minutes
+        }
+
+        function addNewNotification() {
+            const notifications = [
+                { icon: 'fas fa-calendar', title: 'Event Reminder', text: 'Bible Study starts in 1 hour' },
+                { icon: 'fas fa-heart', title: 'Prayer Answered', text: 'Sarah\'s prayer has been answered!' },
+                { icon: 'fas fa-users', title: 'New Member', text: 'Welcome Emily to our community' }
+            ];
+
+            const randomNotification = notifications[Math.floor(Math.random() * notifications.length)];
+            
+            // Update badge count
+            const badge = document.querySelector('.action-btn .badge');
+            if (badge) {
+                let count = parseInt(badge.textContent) || 0;
+                badge.textContent = count + 1;
+                badge.style.display = 'inline-block';
+            }
+
+            // Show toast
+            showToast('info', randomNotification.text);
+        }
+
+        function updateOnlineStatus() {
+            const statusIndicator = document.querySelector('.user-status');
+            if (statusIndicator) {
+                statusIndicator.style.background = navigator.onLine ? 'var(--success-color)' : 'var(--error-color)';
+            }
+        }
+
+        function refreshStats() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                const currentValue = parseInt(stat.textContent);
+                const change = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
+                if (change !== 0) {
+                    stat.textContent = Math.max(0, currentValue + change);
+                }
+            });
+        }
+
+        // Mobile menu setup
+        function setupMobileMenu() {
+            // Create mobile menu button if it doesn't exist
+            if (!document.querySelector('.mobile-menu-toggle')) {
+                const mobileMenuBtn = document.createElement('button');
+                mobileMenuBtn.className = 'mobile-menu-toggle action-btn';
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                mobileMenuBtn.onclick = toggleSidebar;
+                
+                const topBar = document.querySelector('.top-bar');
+                if (topBar) {
+                    topBar.insertBefore(mobileMenuBtn, topBar.firstChild);
+                }
+            }
+        }
+
+        // Tooltip functionality
+        function initializeTooltips() {
+            const tooltipElements = document.querySelectorAll('[title]');
+            tooltipElements.forEach(element => {
+                element.addEventListener('mouseenter', showTooltip);
+                element.addEventListener('mouseleave', hideTooltip);
+            });
+        }
+
+        function showTooltip(e) {
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = e.target.getAttribute('title');
+            tooltip.style.cssText = `
+                position: absolute;
+                background: rgba(0, 0, 0, 0.9);
+                color: white;
+                padding: 0.5rem 0.75rem;
+                border-radius: 6px;
+                font-size: 0.875rem;
+                z-index: 10000;
+                pointer-events: none;
+                white-space: nowrap;
+            `;
+            
+            document.body.appendChild(tooltip);
+            
+            const rect = e.target.getBoundingClientRect();
+            tooltip.style.left = rect.left + 'px';
+            tooltip.style.top = (rect.top - tooltip.offsetHeight - 8) + 'px';
+            
+            e.target.tooltipElement = tooltip;
+            e.target.removeAttribute('title');
+        }
+
+        function hideTooltip(e) {
+            if (e.target.tooltipElement) {
+                document.body.removeChild(e.target.tooltipElement);
+                e.target.tooltipElement = null;
+                e.target.setAttribute('title', e.target.tooltipElement?.textContent || '');
+            }
+        }
+
+        // Event listeners setup
+        function setupEventListeners() {
+            // Navigation links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.getAttribute('data-page');
+                    if (page && page !== 'logout') {
+                        switchPage(page);
+                    }
+                });
+            });
+
+            // Form handlers
+            setupFormHandlers();
+
+            // Global search
+            setupGlobalSearch();
+
+            // Close modals when clicking outside
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        const modalId = this.id;
+                        closeModal(modalId);
+                    }
+                });
+            });
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', handleKeyboardShortcuts);
+
+            // Reaction buttons
+            document.querySelectorAll('.reaction-btn').forEach(btn => {
+                btn.addEventListener('click', handleReaction);
+            });
+
+            // Notification items
+            document.querySelectorAll('.notification-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    markNotificationAsRead(this);
+                });
+            });
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown')) {
+                    document.querySelectorAll('.dropdown.active').forEach(dropdown => {
+                        dropdown.classList.remove('active');
+                    });
+                }
+            });
+        }
+
+        // Keyboard shortcuts
+        function handleKeyboardShortcuts(e) {
+            // Ctrl/Cmd + K for search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                const searchInput = document.getElementById('globalSearch');
+                if (searchInput) {
+                    searchInput.focus();
+                }
+            }
+
+            // Escape to close modals
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.active').forEach(modal => {
+                    closeModal(modal.id);
+                });
+                
+                // Close dropdowns
+                document.querySelectorAll('.dropdown.active').forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
+            }
+
+            // Ctrl/Cmd + N for new prayer
+            if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                e.preventDefault();
+                openModal('prayerModal');
+            }
+        }
+
+        // Reaction handling
+        function handleReaction(e) {
+            e.preventDefault();
+            const button = e.currentTarget;
+            const isActive = button.classList.contains('active');
+            
+            button.classList.toggle('active');
+            
+            const countSpan = button.querySelector('span');
+            if (countSpan) {
+                let count = parseInt(countSpan.textContent) || 0;
+                countSpan.textContent = isActive ? count - 1 : count + 1;
+            }
+        }
+
+        // Utility functions
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        function formatDate(date) {
+            return new Intl.DateTimeFormat('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }).format(date);
+        }
+
+        function formatTime(date) {
+            return new Intl.DateTimeFormat('en-US', {
+                hour: '2-digit',
+                minute: '2-digit'
+            }).format(date);
+        }
+
+        function generateId() {
+            return 'id_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Data loading functions
+        function loadDashboardData() {
+            // Simulate loading dashboard data
+            showLoading();
+            
+            setTimeout(() => {
+                hideLoading();
+                animateStatCards();
+            }, 1000);
+        }
+
+        function animateStatCards() {
+            const statCards = document.querySelectorAll('.stat-card');
+            statCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        }
+
+        // Quick action functions
+        function viewAllEvents() {
+            switchPage('events');
+        }
+
+        function viewSermonArchive() {
+            switchPage('sermons');
+        }
+
+        function requestSermon() {
+            showToast('info', 'Sermon request feature would open here');
+        }
+
+        function viewAllPosts() {
+            switchPage('forum');
+        }
+
+        function showGivingModal() {
+            openModal('givingModal');
+        }
+
+        function showVolunteerOpportunities() {
+            switchPage('volunteer');
+        }
+
+        function showMemberDirectory() {
+            switchPage('directory');
+        }
+
+        function showResources() {
+            switchPage('resources');
+        }
+
+        function viewFullCalendar() {
+            switchPage('calendar');
+        }
+
+        function goHome() {
+            switchPage('dashboard');
+        }
+
+        function toggleUserMenu() {
+            toggleUserDropdown();
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                showLoading();
+                
+                setTimeout(() => {
+                    hideLoading();
+                    showToast('success', 'Logged out successfully. Redirecting...');
+                    
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 2000);
+                }, 1000);
+            }
+        }
+
+        // Add event to list (for demo)
+        function addEventToList(eventData) {
+            console.log('New event added:', eventData);
+            // In real app, this would update the UI with the new event
+        }
+
+        // Service Worker registration for offline functionality
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('Service Worker registered successfully');
+                })
+                .catch(error => {
+                    console.log('Service Worker registration failed:', error);
+                });
+        }
+
+        // Performance monitoring
+        function trackPerformance() {
+            if ('performance' in window) {
+                window.addEventListener('load', () => {
+                    const perfData = performance.timing;
+                    const loadTime = perfData.loadEventEnd - perfData.navigationStart;
+                    console.log('Page load time:', loadTime + 'ms');
+                });
+            }
+        }
+
+        // Error handling
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.error);
+            showToast('error', 'An unexpected error occurred. Please refresh the page.');
+        });
+
+        // Unhandled promise rejection handling
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Unhandled promise rejection:', e.reason);
+            showToast('error', 'A network error occurred. Please check your connection.');
+        });
+
+        // Initialize performance tracking
+        trackPerformance();
+
+        // Final initialization message
+        console.log('🎉 Grace Community Church Dashboard fully loaded and ready!');
+        console.log('📊 Features: Events, Prayers, Sermons, Community Forum, Giving, Directory');
+        console.log('🔧 Advanced: Real-time updates, Auto-save, Keyboard shortcuts, Mobile responsive');
+        console.log('🙏 May this platform strengthen our church community!');
+
+        // Export functions for external use (if needed)
+        window.ChurchDashboard = {
+            openModal,
+            closeModal,
+            showToast,
+            switchPage,
+            toggleTheme,
+            logout
+        };
+    </script>
+</body>
+</html>
+
