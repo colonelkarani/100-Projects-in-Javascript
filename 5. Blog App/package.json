@@ -1,0 +1,18 @@
+{
+  "name": "5.-blog-app",
+  "version": "1.0.0",
+  "description": "my first blog",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.js"
+  },
+  "author": "Colonel Karani",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.1",
+    "nodemon": "^3.1.10"
+  }
+}

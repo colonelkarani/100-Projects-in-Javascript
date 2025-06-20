@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>the blog - Exploring Tech, Medicine, and the Wonders In Between</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Inter:wght@300;400;500&family=Fira+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="dark">
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">the blog</a>
+            <div class="nav-controls">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" placeholder="Search posts..." id="searchInput">
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="hero">
+            <h1>the blog</h1>
+            <p>Exploring Tech, Medicine, and the Wonders In Between</p>
+        </section>
+
+     
+
+        <div class="filter-tags">
+            <button class="tag-filter active" data-tag="all">All</button>
+            <button class="tag-filter" data-tag="tech">Tech</button>
+            <button class="tag-filter" data-tag="medicine">Medicine</button>
+            <button class="tag-filter" data-tag="personal">Personal</button>
+            <button class="tag-filter" data-tag="ai">AI</button>
+            <button class="tag-filter" data-tag="web-dev">Web Dev</button>
+        </div>
+
+        <div class="posts-grid" id="postsGrid">
+            <article class="post-card" data-tags="tech ai">
+                <div class="post-image">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="post-content">
+                    <h2 class="post-title">How AI is Revolutionizing Diagnostics</h2>
+                    <div class="post-meta">
+                        <span class="post-date">June 18, 2025</span>
+                        <div class="post-tags">
+                            <span class="post-tag">Tech</span>
+                            <span class="post-tag">AI</span>
+                        </div>
+                    </div>
+                    <p class="post-excerpt">Artificial Intelligence is transforming the medical field, particularly in diagnostic imaging and pattern recognition. From detecting cancer in radiology scans to predicting patient outcomes...</p>
+                    <div class="post-actions">
+                        <a href="./blog.html" class="read-more">Read More</a>
+                        <div class="post-social">
+                            <button class="social-btn" title="Share on Twitter"><i class="fab fa-twitter"></i></button>
+                            <button class="social-btn" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></button>
+                            <button class="social-btn" title="Copy Link"><i class="fas fa-link"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="post-card" data-tags="web-dev tech">
+                <div class="post-image">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="post-content">
+                    <h2 class="post-title">Building Responsive Web Apps with Modern CSS</h2>
+                    <div class="post-meta">
+                        <span class="post-date">June 15, 2025</span>
+                        <div class="post-tags">
+                            <span class="post-tag">Web Dev</span>
+                            <span class="post-tag">Tech</span>
+                        </div>
+                    </div>
+                    <p class="post-excerpt">Learn how to create stunning, responsive web applications using CSS Grid, Flexbox, and modern CSS features. This comprehensive guide covers everything from layout to animations...</p>
+                    <div class="code-block">
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+                    </div>
+                    <div class="post-actions">
+                        <a href="#" class="read-more">Read More</a>
+                        <div class="post-social">
+                            <button class="social-btn" title="Share on Twitter"><i class="fab fa-twitter"></i></button>
+                            <button class="social-btn" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></button>
+                            <button class="social-btn" title="Copy Link"><i class="fas fa-link"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="post-card" data-tags="medicine personal">
+                <div class="post-image">
+                    <i class="fas fa-heartbeat"></i>
+                </div>
+                <div class="post-content">
+                    <h2 class="post-title">My Journey Through Medical School</h2>
+                    <div class="post-meta">
+                        <span class="post-date">June 12, 2025</span>
+                        <div class="post-tags">
+                            <span class="post-tag">Medicine</span>
+                            <span class="post-tag">Personal</span>
+                        </div>
+                    </div>
+                    <p class="post-excerpt">Reflecting on the challenges, triumphs, and lessons learned during my medical education. From anatomy labs to clinical rotations, here's what shaped my perspective on healthcare...</p>
+                    <div class="post-actions">
+                        <a href="#" class="read-more">Read More</a>
+                        <div class="post-social">
+                            <button class="social-btn" title="Share on Twitter"><i class="fab fa-twitter"></i></button>
+                            <button class="social-btn" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></button>
+                            <button class="social-btn" title="Copy Link"><i class="fas fa-link"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="post-card" data-tags="tech web-dev">
+                <div class="post-image">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div class="post-content">
+                    <h2 class="post-title">MongoDB Integration with Node.js</h2>
+                    <div class="post-meta">
+                        <span class="post-date">June 10, 2025</span>
+                        <div class="post-tags">
+                            <span class="post-tag">Tech</span>
+                            <span class="post-tag">Web Dev</span>
+                        </div>
+                    </div>
+                    <p class="post-excerpt">A complete guide to integrating MongoDB with Node.js applications. Learn about connection management, schema design, and best practices for database operations...</p>
+                    <div class="code-block">
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/myblog', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+                    </div>
+                    <div class="post-actions">
+                        <a href="#" class="read-more">Read More</a>
+                        <div class="post-social">
+                            <button class="social-btn" title="Share on Twitter"><i class="fab fa-twitter"></i></button>
+                            <button class="social-btn" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></button>
+                            <button class="social-btn" title="Copy Link"><i class="fas fa-link"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="post-card" data-tags="medicine tech">
+                <div class="post-image">
+                    <i class="fas fa-microscope"></i>
+                </div>
+                <div class="post-content">
+                    <h2 class="post-title">Digital Health: The Future of Patient Care</h2>
+                    <div class="post-meta">
+                        <span class="post-date">June 8, 2025</span>
+                        <div class="post-tags">
+                            <span class="post-tag">Medicine</span>
+                            <span class="post-tag">Tech</span>
+                        </div>
+                    </div>
+                    <p class="post-excerpt">Exploring how digital technologies are reshaping healthcare delivery. From telemedicine to wearable devices, discover the innovations improving patient outcomes worldwide...</p>
+                    <div class="post-actions">
+                        <a href="#" class="read-more">Read More</a>
+                        <div class="post-social">
+                            <button class="social-btn" title="Share on Twitter"><i class="fab fa-twitter"></i></button>
+                            <button class="social-btn" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></button>
+                            <button class="social-btn" title="Copy Link"><i class="fas fa-link"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="post-card" data-tags="personal tech">
+                <div class="post-image">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <div class="post-content">
+                    <h2 class="post-title">Why I Started Coding</h2>
+                    <div class="post-meta">
+                        <span class="post-date">June 5, 2025</span>
+                        <div class="post-tags">
+                            <span class="post-tag">Personal</span>
+                            <span class="post-tag">Tech</span>
+                        </div>
+                    </div>
+                    <p class="post-excerpt">The story behind my coding journey - from curiosity to passion. How programming became a tool for solving real-world problems and expressing creativity...</p>
+                    <div class="post-actions">
+                        <a href="#" class="read-more">Read More</a>
+                        <div class="post-social">
+                            <button class="social-btn" title="Share on Twitter"><i class="fab fa-twitter"></i></button>
+                            <button class="social-btn" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></button>
+                            <button class="social-btn" title="Copy Link"><i class="fas fa-link"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="post-card" data-tags="web-dev tech">
+                <div class="post-image">
+                    <i class="fas fa-paint-brush"></i>
+                </div>
+                <div class="post-content">
+                    <h2 class="post-title">Figma to HTML: Design Implementation Tips</h2>
+                    <div class="post-meta">
+                        <span class="post-date">June 3, 2025</span>
+                        <div class="post-tags">
+                            <span class="post-tag">Web Dev</span>
+                            <span class="post-tag">Tech</span>
+                        </div>
+                    </div>
+                    <p class="post-excerpt">Best practices for converting Figma designs into pixel-perfect HTML and CSS. Learn about design systems, component architecture, and responsive implementation strategies...</p>
+                    <div class="post-actions">
+                        <a href="#" class="read-more">Read More</a>
+                        <div class="post-social">
+                            <button class="social-btn" title="Share on Twitter"><i class="fab fa-twitter"></i></button>
+                            <button class="social-btn" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></button>
+                            <button class="social-btn" title="Copy Link"><i class="fas fa-link"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="post-card" data-tags="medicine ai">
+                <div class="post-image">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <div class="post-content">
+                    <h2 class="post-title">Machine Learning in Medical Research</h2>
+                    <div class="post-meta">
+                        <span class="post-date">June 1, 2025</span>
+                        <div class="post-tags">
+                            <span class="post-tag">Medicine</span>
+                            <span class="post-tag">AI</span>
+                        </div>
+                    </div>
+                    <p class="post-excerpt">How machine learning algorithms are accelerating medical research and drug discovery. Exploring applications in genomics, clinical trials, and personalized medicine...</p>
+                    <div class="post-actions">
+                        <a href="#" class="read-more">Read More</a>
+                        <div class="post-social">
+                            <button class="social-btn" title="Share on Twitter"><i class="fab fa-twitter"></i></button>
+                            <button class="social-btn" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></button>
+                            <button class="social-btn" title="Copy Link"><i class="fas fa-link"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="post-card" data-tags="tech web-dev">
+                <div class="post-image">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="post-content">
+                    <h2 class="post-title">Web Authentication Best Practices</h2>
+                    <div class="post-meta">
+                        <span class="post-date">May 29, 2025</span>
+                        <div class="post-tags">
+                            <span class="post-tag">Tech</span>
+                            <span class="post-tag">Web Dev</span>
+                        </div>
+                    </div>
+                    <p class="post-excerpt">Comprehensive guide to implementing secure authentication in web applications. Covering JWT tokens, OAuth, password hashing, and session management...</p>
+                    <div class="code-block">
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
+const hashPassword = async (password) => {
+  return await bcrypt.hash(password, saltRounds);
+};
+                    </div>
+                    <div class="post-actions">
+                        <a href="#" class="read-more">Read More</a>
+                        <div class="post-social">
+                            <button class="social-btn" title="Share on Twitter"><i class="fab fa-twitter"></i></button>
+                            <button class="social-btn" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></button>
+                            <button class="social-btn" title="Copy Link"><i class="fas fa-link"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <article class="post-card" data-tags="personal medicine">
+                <div class="post-image">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <div class="post-content">
+                    <h2 class="post-title">Balancing Tech and Medicine</h2>
+                    <div class="post-meta">
+                        <span class="post-date">May 27, 2025</span>
+                        <div class="post-tags">
+                            <span class="post-tag">Personal</span>
+                            <span class="post-tag">Medicine</span>
+                        </div>
+                    </div>
+                    <p class="post-excerpt">Finding harmony between my passion for technology and commitment to medicine. How coding skills complement medical practice and open new possibilities for healthcare innovation...</p>
+                    <div class="post-actions">
+                        <a href="#" class="read-more">Read More</a>
+                        <div class="post-social">
+                            <button class="social-btn" title="Share on Twitter"><i class="fab fa-twitter"></i></button>
+                            <button class="social-btn" title="Share on WhatsApp"><i class="fab fa-whatsapp"></i></button>
+                            <button class="social-btn" title="Copy Link"><i class="fas fa-link"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <section class="portfolio-section">
+            <h3>Featured Projects</h3>
+            <p>A showcase of my latest work and experiments</p>
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="portfolio-info">
+                        <h4>Medical App UI</h4>
+                        <p>Modern healthcare application interface</p>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="portfolio-info">
+                        <h4>Analytics Dashboard</h4>
+                        <p>Data visualization and reporting tool</p>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="portfolio-info">
+                        <h4>Portfolio Website</h4>
+                        <p>Responsive personal portfolio design</p>
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="portfolio-info">
+                        <h4>E-commerce Platform</h4>
+                        <p>Full-stack online store solution</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+   <section class="newsletter-section">
+            <h3>Stay Updated</h3>
+            <p>Subscribe to get the latest posts delivered to your inbox</p>
+            <form class="newsletter-form">
+                <input type="email" class="newsletter-input" placeholder="Enter your email" required>
+                <button type="submit" class="newsletter-btn">Subscribe</button>
+            </form>
+        </section>
+
+
+        <section class="ecommerce-section">
+            <h3>Digital Products</h3>
+            <p>Premium resources and tools for developers and designers</p>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-image">
+                        <i class="fas fa-file-code"></i>
+                    </div>
+                    <div class="product-info">
+                        <h4>HTML Templates</h4>
+                        <p>Modern responsive templates</p>
+                        <div class="product-price">$29</div>
+                        <button class="add-to-cart">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <div class="product-info">
+                        <h4>UI Kit</h4>
+                        <p>Complete design system</p>
+                        <div class="product-price">$49</div>
+                        <button class="add-to-cart">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <div class="product-info">
+                        <h4>Web Dev Guide</h4>
+                        <p>Comprehensive learning resource</p>
+                        <div class="product-price">$19</div>
+                        <button class="add-to-cart">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div class="product-info">
+                        <h4>Developer Tools</h4>
+                        <p>Productivity enhancing utilities</p>
+                        <div class="product-price">$39</div>
+                        <button class="add-to-cart">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="contact-section">
+            <h3>Get In Touch</h3>
+            <p>Have a project in mind or want to collaborate? Let's talk!</p>
+            <form class="contact-form">
+                <div class="form-group">
+                    <input type="text" class="form-input" placeholder="Your Name" required>
+                    <input type="email" class="form-input" placeholder="Your Email" required>
+                </div>
+                <input type="text" class="form-input" placeholder="Subject" required>
+                <textarea class="form-textarea" placeholder="Your Message" required></textarea>
+                <button type="submit" class="form-submit">Send Message</button>
+            </form>
+        </section>
+
+        <div class="comment-section">
+            <h3>Leave a Comment</h3>
+            <div class="comment-form">
+                <textarea class="comment-input" placeholder="Share your thoughts..." id="commentInput"></textarea>
+                <button class="comment-submit" onclick="addComment()">Post Comment</button>
+            </div>
+            <div id="commentsList"></div>
+        </div>
+    </main>
+
+    <button class="support-btn" id="supportBtn">
+        <i class="fas fa-heart"></i>
+    </button>
+
+    <button class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <div class="modal" id="supportModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h3>Support the Blog</h3>
+            <p>Your support helps keep this blog running and content flowing!</p>
+            <div class="mpesa-details">
+                <h4>M-Pesa Details</h4>
+                <p><strong>Paybill:</strong> 174379</p>
+                <p><strong>Account:</strong> theblog2025</p>
+                <p><strong>Amount:</strong> Any amount appreciated</p>
+            </div>
+            <p>Thank you for your generous support! 🙏</p>
+        </div>
+    </div>
+
+  
+<script src="script.js"></script>
+</body>
+</html>
