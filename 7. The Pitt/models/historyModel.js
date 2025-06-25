@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-
+const {Schema} = mongoose
 const chiefComplaintsSchema = new mongoose.Schema({
     title:{
     type: String,
@@ -145,7 +145,7 @@ const pastMedicalHistorySchema = new mongoose.Schema({
     complications: String
   }],
   surgeries: [{
-    type: String,
+    typeOfSurgery: String,
     date: String,
     location: String,
     complications: String
@@ -338,7 +338,7 @@ const socialHistorySchema = new mongoose.Schema({
     },
     drugs: {
       status: String,
-      type: String,
+      typeOfDrugs: String,
       quantity: String,
       duration: String,
       quitAttempts: Number
@@ -606,21 +606,18 @@ const reviewOfSystemsSchema = new mongoose.Schema({
 const imedHistorySchema = new mongoose.Schema({
     name: {type: String, required: true},
     age: {type: Number, required: true},
-    gender:{type: String, required: true, enum:{
-        value:["Male", "Female"],
-        message: '{VALUE} is not a valid gender'
-    }},
+    gender:{type: String, required: true, enum: ["Male", "Female"]   },
     dateOfAdmission:{type:Date, required: true, default: Date.now},
     hpi: hpiSchema,
     pastMedical: pastMedicalHistorySchema,
     obsGyn: obGynHistorySchema,
     familyHistory: familyHistorySchema,
     socialHistory: socialHistorySchema,
-    reviewOfSystems: reviewOfSystemsSchema,
+    reviewOfSystems: reviewOfSystemsSchema,},
     
-timestamps: true
-})
+{timestamps: true}
+)
 
-const ImedHistory = mongoose.model("imedHistory", imedHistorySchema)
+const ImedHistory = mongoose.model("imedHistory", imedHistorySchema, "Imed")
 
-module.exports = ImedHistory
+module.exports = imedHistorySchema

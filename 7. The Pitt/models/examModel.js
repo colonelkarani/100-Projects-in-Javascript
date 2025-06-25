@@ -9,6 +9,7 @@ const generalExamSchema = new Schema({
   hydration: String, // Well-hydrated, dehydrated
   jaundice: Boolean,
   cyanosis: Boolean,
+  clubbing: Number,
   pallor: Boolean,
   edema: String, // Location and severity
   lymphNodes: String, // Palpable nodes description
@@ -121,4 +122,6 @@ const examinationSchema = new Schema({
   additionalNotes: String
 });
 
-module.exports = mongoose.model('Examination', examinationSchema);
+const Examination = mongoose.model('Examination', examinationSchema);
+
+module.exports = examinationSchema

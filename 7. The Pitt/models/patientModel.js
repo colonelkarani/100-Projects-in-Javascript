@@ -1,6 +1,9 @@
 const mongoose = require("mongoose")
-const ImedHistory = require("./historyModel.js")
+const imedHistorySchema = require("./historyModel.js")
+const examinationSchema = require("./examModel.js")
+const diseaseSchema = require("./diseaseModel.js")
 
+const {Schema} = mongoose
 const vitalsSchema = new mongoose.Schema({
     temperature: Number,
     bloodPressure: Number,
@@ -15,10 +18,10 @@ const visitSchema = new mongoose.Schema({
   visitDate: { type: Date, default: Date.now },           // Date and time of the visit
   reasonForVisit: { type: String, required: true },       // Chief complaint or reason for encounter
   location: String,                                       // Clinic, ward, telemedicine, etc.
-  history: { type: Schema.Types.Mixed },                  // Snapshot of history at the time (can embed or reference)
-  reviewOfSystems: { type: Schema.Types.Mixed },          // ROS at the visit
-  examination: { type: Schema.Types.Mixed },              // Physical exam findings
-  vitals: { type: Schema.Types.Mixed },                   // Vitals taken at the visit
+  history: { },                  // Snapshot of history at the time (can embed or reference)
+  reviewOfSystems: { },          // ROS at the visit
+  examination: { },              // Physical exam findings
+  vitals: { },                   // Vitals taken at the visit
   assessment: String,                                     // Clinical impression/diagnosis
   plan: String,                                           // Management plan
   medicationsPrescribed: [{                               // Medications prescribed or changed at the visit
@@ -60,7 +63,7 @@ const visitSchema = new mongoose.Schema({
 });
 
 
-const labResultSchema = new Schema({
+const labResultSchema = new mongoose.Schema({
   testName: { type: String },           // e.g., "Complete Blood Count", "Blood Glucose"
   testCode: { type: String },                           // Optional: LOINC or local code
   specimenType: { type: String },                       // e.g., "Blood", "Urine", "CSF"
@@ -80,7 +83,7 @@ const labResultSchema = new Schema({
   }]
 });
 
-const imagingSchema = new Schema({
+const imagingSchema = new mongoose.Schema({
   type: { 
     type: String, 
     required: true 
@@ -127,7 +130,7 @@ const imagingSchema = new Schema({
   }
 });
 
-const procedureSchema = new Schema({
+const procedureSchema = new mongoose.Schema({
   procedureName: { type: String},         // Name of the procedure
   procedureCode: { type: String },                         // CPT/ICD-10/other coding (optional)
   indication: { type: String },                            // Reason for the procedure
@@ -144,9 +147,10 @@ const procedureSchema = new Schema({
 }, { timestamps: true });
 
 const patientSchema = new mongoose.Schema({
-    history: ImedHistory,
-    vitals: vitalsSchema,
-     visits: [visitSchema],
+    history: imedHistorySchema,
+    examination: examinationSchema,
+   vitals: vitalsSchema,
+   visits: [visitSchema],
   labs: [labResultSchema],
   imaging: [imagingSchema],
   procedures: [procedureSchema],
@@ -154,4 +158,4 @@ const patientSchema = new mongoose.Schema({
 
 const Patient = new mongoose.model("Patients", patientSchema)
 
-module.exports = Patient
+module.exports = patientSchema

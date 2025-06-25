@@ -1,16 +1,14 @@
 const mongoose = require('mongoose');
+const imedHistorySchema = require("./historyModel.js")
 const { Schema } = mongoose;
 
 const diseaseSchema = new Schema({
   // Core identification
   name: { type: String, required: true }, // e.g., "Diabetes Mellitus Type 2"
   synonyms: [String], // Alternative names
-  codes: [{
-    system: String, // e.g., "ICD-10", "SNOMED"
-    code: String
-  }],
 
   // Classification
+  system: String,
   category: String, // e.g., "Metabolic", "Infectious"
   subcategory: String, // e.g., "Autoimmune", "Bacterial"
 
@@ -41,18 +39,6 @@ const diseaseSchema = new Schema({
   }],
   differentialDiagnosis: [String],
 
-  // Disease course and severity
-  stages: [{
-    name: String,
-    description: String
-  }],
-  severityScales: [{
-    scaleName: String,
-    value: String
-  }],
-  prognosis: String,
-  naturalHistory: String,
-
   // Treatment and management
   treatments: [{
     type: String, // "Medication", "Surgery", "Lifestyle"
@@ -62,21 +48,12 @@ const diseaseSchema = new Schema({
   followUp: String,
   prevention: [String],
 
-  // Public health and epidemiology
-  transmission: String, // For infectious diseases
-  notifiable: Boolean,
-  outbreakPotential: Boolean,
-
-  // Research and references
-  references: [{
-    title: String,
-    url: String
-  }],
-  clinicalTrials: [String],
 
   // Metadata
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Disease', diseaseSchema);
+const Disease = mongoose.model('Disease', diseaseSchema);
+
+module.exports = diseaseSchema
