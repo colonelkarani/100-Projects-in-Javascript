@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hypothalamic-Pituitary Axis - Interactive Visualization</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #fff, #a8edea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            height: calc(100vh - 160px);
+        }
+
+        .controls-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow-y: auto;
+        }
+
+        .controls-panel h3 {
+            color: white;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.3rem;
+        }
+
+        .slider-group {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .slider-group label {
+            display: block;
+            color: white;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        .slider-container {
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .value-display {
+            color: #a8edea;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .visualization-area {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .viz-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .tab-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            display: none;
+            height: calc(100% - 80px);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .anatomy-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .gland {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .gland:hover {
+            transform: scale(1.05);
+            filter: brightness(1.2);
+        }
+
+        .hormone-path {
+            fill: none;
+            stroke-width: 3;
+            stroke-dasharray: 5,5;
+            opacity: 0.8;
+        }
+
+        .hormone-particle {
+            r: 4;
+            opacity: 0.9;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 100%;
+        }
+
+        .axis {
+            font-size: 12px;
+            color: #333;
+        }
+
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #333;
+            shape-rendering: crispEdges;
+        }
+
+        .grid line {
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-dasharray: 2,2;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 3px;
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+
+        .feedback-indicator {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.9rem;
+            min-width: 200px;
+        }
+
+        .feedback-arrow {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        .pulsing {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .glow {
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+        }
+
+        .reset-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .reset-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .info-panel {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            color: white;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .hormone-level-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .hormone-level-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .controls-panel {
+                order: 2;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hypothalamic-Pituitary Axis</h1>
+            <p>Interactive Endocrine System Visualization</p>
+        </div>
+
+        <div class="main-content">
+            <div class="controls-panel">
+                <h3>🎛️ System Controls</h3>
+                
+                <div class="slider-group">
+                    <label>Hypothalamic Activity</label>
+                    <div class="slider-container">
+                        <input type="range" id="hypothalamus-slider" class="slider" min="0" max="100" value="50">
+                        <div class="value-display" id="hypothalamus-value">50%</div>
+                    </div>
+                </div>
+
+                <div class="slider-group">
+                    <label>Stress Level</label>
+                    <div class="slider-container">
+                        <input type="range" id="stress-slider" class="slider" min="0" max="100" value="25">
+                        <div class="value-display" id="stress-value">25%</div>
+                    </div>
+                </div>
+
+                <div class="slider-group">
+                    <label>Circadian Rhythm</label>
+                    <div class="slider-container">
+                        <input type="range" id="circadian-slider" class="slider" min="0" max="100" value="60">
+                        <div class="value-display" id="circadian-value">60%</div>
+                    </div>
+                </div>
+
+                <div class="slider-group">
+                    <label>Feedback Sensitivity</label>
+                    <div class="slider-container">
+                        <input type="range" id="feedback-slider" class="slider" min="0" max="100" value="75">
+                        <div class="value-display" id="feedback-value">75%</div>
+                    </div>
+                </div>
+
+                <div class="slider-group">
+                    <label>External Stimuli</label>
+                    <div class="slider-container">
+                        <input type="range" id="stimuli-slider" class="slider" min="0" max="100" value="40">
+                        <div class="value-display" id="stimuli-value">40%</div>
+                    </div>
+                </div>
+
+                <button class="reset-button" onclick="resetSystem()">🔄 Reset System</button>
+
+                <div class="info-panel">
+                    <h4>Current Status:</h4>
+                    <div id="system-status">
+                        <div>CRH Level: <span id="crh-level">Normal</span></div>
+                        <div>ACTH Level: <span id="acth-level">Normal</span></div>
+                        <div>Cortisol Level: <span id="cortisol-level">Normal</span></div>
+                        <div>Feedback Loop: <span id="feedback-status">Stable</span></div>
+                    </div>
+                </div>
+
+                <div class="info-panel">
+                    <h4>Hormone Levels:</h4>
+                    <div style="margin-bottom: 10px;">
+                        <div>CRH (Corticotropin-Releasing Hormone)</div>
+                        <div class="hormone-level-bar">
+                            <div class="hormone-level-fill" id="crh-bar"></div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <div>ACTH (Adrenocorticotropic Hormone)</div>
+                        <div class="hormone-level-bar">
+                            <div class="hormone-level-fill" id="acth-bar"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div>Cortisol</div>
+                        <div class="hormone-level-bar">
+                            <div class="hormone-level-fill" id="cortisol-bar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="visualization-area">
+                <div class="viz-tabs">
+                    <button class="tab-button active" onclick="showTab('anatomy')">🧠 Anatomy</button>
+                    <button class="tab-button" onclick="showTab('timeline')">📊 Timeline</button>
+                    <button class="tab-button" onclick="showTab('feedback')">🔄 Feedback Loop</button>
+                    <button class="tab-button" onclick="showTab('correlation')">📈 Correlations</button>
+                </div>
+
+                <div id="anatomy-tab" class="tab-content active">
+                    <svg class="anatomy-svg" id="anatomy-svg"></svg>
+                </div>
+
+                <div id="timeline-tab" class="tab-content">
+                    <div class="chart-container" id="timeline-chart"></div>
+                </div>
+
+                <div id="feedback-tab" class="tab-content">
+                    <div class="chart-container" id="feedback-chart"></div>
+                </div>
+
+                <div id="correlation-tab" class="tab-content">
+                    <div class="chart-container" id="correlation-chart"></div>
+                </div>
+
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ff6b6b;"></div>
+                        <span>CRH</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4ecdc4;"></div>
+                        <span>ACTH</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #45b7d1;"></div>
+                        <span>Cortisol</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #96ceb4;"></div>
+                        <span>Feedback</span>
+                    </div>
+                </div>
+
+                <div class="feedback-indicator">
+                    <div id="feedback-display">
+                        <span class="feedback-arrow">↺</span>
+                        <span id="feedback-text">Normal Feedback Loop</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // Global variables
+        let currentData = {
+            hypothalamus: 50,
+            stress: 25,
+            circadian: 60,
+            feedback: 75,
+            stimuli: 40,
+            crh: 50,
+            acth: 45,
+            cortisol: 40
+        };
+
+        let timelineData = [];
+        let animationId;
+        let particleSystem = [];
+        let time = 0;
+
+        // Initialize the visualization
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSliders();
+            initializeAnatomy();
+            initializeCharts();
+            startAnimation();
+            generateInitialData();
+        });
+
+        function initializeSliders() {
+            const sliders = ['hypothalamus', 'stress', 'circadian', 'feedback', 'stimuli'];
+            
+            sliders.forEach(slider => {
+                const element = document.getElementById(slider + '-slider');
+                const valueDisplay = document.getElementById(slider + '-value');
+                
+                element.addEventListener('input', function() {
+                    const value = parseInt(this.value);
+                    currentData[slider] = value;
+                    valueDisplay.textContent = value + '%';
+                    updateSystem();
+                });
+            });
+        }
+
+        function initializeAnatomy() {
+            const svg = d3.select('#anatomy-svg');
+            const width = svg.node().getBoundingClientRect().width;
+            const height = svg.node().getBoundingClientRect().height;
+
+            // Create anatomical structure
+            createAnatomicalStructure(svg, width, height);
+            createHormonePathways(svg, width, height);
+            initializeParticleSystem(svg, width, height);
+        }
+
+        function createAnatomicalStructure(svg, width, height) {
+            // Brain outline
+            const brainGroup = svg.append('g').attr('class', 'brain-group');
+            
+            // Hypothalamus
+            const hypothalamus = brainGroup.append('g')
+                .attr('class', 'gland hypothalamus')
+                .attr('transform', `translate(${width/2}, ${height/4})`);
+            
+            hypothalamus.append('ellipse')
+                .attr('cx', 0)
+                .attr('cy', 0)
+                .attr('rx', 40)
+                .attr('ry', 25)
+                .attr('fill', '#ff6b6b')
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 2);
+            
+            hypothalamus.append('text')
+                .attr('x', 0)
+                .attr('y', 5)
+                .attr('text-anchor', 'middle')
+                .attr('fill', 'white')
+                .attr('font-size', '12px')
+                .attr('font-weight', 'bold')
+                .text('Hypothalamus');
+
+            // Pituitary Gland
+            const pituitary = brainGroup.append('g')
+                .attr('class', 'gland pituitary')
+                .attr('transform', `translate(${width/2}, ${height/2.5})`);
+            
+            pituitary.append('ellipse')
+                .attr('cx', 0)
+                .attr('cy', 0)
+                .attr('rx', 30)
+                .attr('ry', 20)
+                .attr('fill', '#4ecdc4')
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 2);
+            
+            pituitary.append('text')
+                .attr('x', 0)
+                .attr('y', 5)
+                .attr('text-anchor', 'middle')
+                .attr('fill', 'white')
+                .attr('font-size', '11px')
+                .attr('font-weight', 'bold')
+                .text('Pituitary');
+
+            // Adrenal Glands
+            const adrenalLeft = brainGroup.append('g')
+                .attr('class', 'gland adrenal')
+                .attr('transform', `translate(${width/2 - 80}, ${height/1.5})`);
+            
+            adrenalLeft.append('ellipse')
+                .attr('cx', 0)
+                .attr('cy', 0)
+                .attr('rx', 25)
+                .attr('ry', 15)
+                .attr('fill', '#45b7d1')
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 2);
+            
+            adrenalLeft.append('text')
+                .attr('x', 0)
+                .attr('y', 5)
+                .attr('text-anchor', 'middle')
+                .attr('fill', 'white')
+                .attr('font-size', '10px')
+                .attr('font-weight', 'bold')
+                .text('Adrenal');
+
+            const adrenalRight = brainGroup.append('g')
+                .attr('class', 'gland adrenal')
+                .attr('transform', `translate(${width/2 + 80}, ${height/1.5})`);
+            
+            adrenalRight.append('ellipse')
+                .attr('cx', 0)
+                .attr('cy', 0)
+                .attr('rx', 25)
+                .attr('ry', 15)
+                .attr('fill', '#45b7d1')
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 2);
+            
+            adrenalRight.append('text')
+                .attr('x', 0)
+                .attr('y', 5)
+                .attr('text-anchor', 'middle')
+                .attr('fill', 'white')
+                .attr('font-size', '10px')
+                .attr('font-weight', 'bold')
+                .text('Adrenal');
+
+            // Add interactive tooltips
+            addGlandTooltips(svg);
+        }
+
+        function createHormonePathways(svg, width, height) {
+            const pathGroup = svg.append('g').attr('class', 'hormone-paths');
+            
+            // CRH pathway (Hypothalamus to Pituitary)
+            pathGroup.append('path')
+                .attr('class', 'hormone-path crh-path')
+                .attr('d', `M ${width/2} ${height/4 + 25} L ${width/2} ${height/2.5 - 20}`)
+                .attr('stroke', '#ff6b6b')
+                .attr('marker-end', 'url(#arrowhead-crh)');
+
+            // ACTH pathway (Pituitary to Adrenals)
+            pathGroup.append('path')
+                .attr('class', 'hormone-path acth-path')
+                .attr('d', `M ${width/2 - 20} ${height/2.5 + 15} L ${width/2 - 70} ${height/1.5 - 10}`)
+                .attr('stroke', '#4ecdc4')
+                .attr('marker-end', 'url(#arrowhead-acth)');
+
+            pathGroup.append('path')
+                .attr('class', 'hormone-path acth-path')
+                .attr('d', `M ${width/2 + 20} ${height/2.5 + 15} L ${width/2 + 70} ${height/1.5 - 10}`)
+                .attr('stroke', '#4ecdc4')
+                .attr('marker-end', 'url(#arrowhead-acth)');
+
+            // Cortisol feedback (Adrenals back to Hypothalamus)
+            pathGroup.append('path')
+                .attr('class', 'hormone-path cortisol-path')
+                .attr('d', `M ${width/2 - 60} ${height/1.5 - 15} Q ${width/2 - 120} ${height/3} ${width/2 - 30} ${height/4}`)
+                .attr('stroke', '#96ceb4')
+                .attr('fill', 'none')
+                .attr('marker-end', 'url(#arrowhead-cortisol)');
+
+            // Create arrow markers
+            createArrowMarkers(svg);
+        }
+
+        function createArrowMarkers(svg) {
+            const defs = svg.append('defs');
+            
+            const colors = [
+                { id: 'crh', color: '#ff6b6b' },
+                { id: 'acth', color: '#4ecdc4' },
+                { id: 'cortisol', color: '#96ceb4' }
+            ];
+
+            colors.forEach(c => {
+                defs.append('marker')
+                    .attr('id', `arrowhead-${c.id}`)
+                    .attr('viewBox', '-0 -5 10 10')
+                    .attr('refX', 5)
+                    .attr('refY', 0)
+                    .attr('orient', 'auto')
+                    .attr('markerWidth', 8)
+                    .attr('markerHeight', 8)
+                    .attr('xoverflow', 'visible')
+                    .append('path')
+                    .attr('d', 'M 0,-5 L 10,0 L 0,5')
+                    .attr('fill', c.color);
+            });
+        }
+
+        function initializeParticleSystem(svg, width, height) {
+            const particleGroup = svg.append('g').attr('class', 'particles');
+            
+            // Create hormone particles
+            for (let i = 0; i < 20; i++) {
+                particleSystem.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    type: ['crh', 'acth', 'cortisol'][Math.floor(Math.random() * 3)],
+                    opacity: Math.random() * 0.8 + 0.2
+                });
+            }
+
+            updateParticles(svg, width, height);
+        }
+
+        function updateParticles(svg, width, height) {
+            const particleGroup = svg.select('.particles');
+            
+            const particles = particleGroup.selectAll('.hormone-particle')
+                .data(particleSystem);
+
+            particles.enter()
+                .append('circle')
+                .attr('class', 'hormone-particle')
+                .attr('r', 3)
+                .merge(particles)
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y)
+                .attr('opacity', d => d.opacity)
+                .attr('fill', d => {
+                    switch(d.type) {
+                        case 'crh': return '#ff6b6b';
+                        case 'acth': return '#4ecdc4';
+                        case 'cortisol': return '#96ceb4';
+                        default: return '#fff';
+                    }
+                });
+
+            // Update particle positions
+            particleSystem.forEach(p => {
+                p.x += p.vx * (currentData.hypothalamus / 50);
+                p.y += p.vy * (currentData.stress / 50);
+                
+                // Bounce off walls
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+                
+                // Keep in bounds
+                p.x = Math.max(0, Math.min(width, p.x));
+                p.y = Math.max(0, Math.min(height, p.y));
+            });
+        }
+
+        function initializeCharts() {
+            initializeTimelineChart();
+            initializeFeedbackChart();
+            initializeCorrelationChart();
+        }
+
+        function initializeTimelineChart() {
+            const container = d3.select('#timeline-chart');
+            container.selectAll('*').remove();
+
+            const margin = {top: 20, right: 30, bottom: 40, left: 50};
+            const width = container.node().getBoundingClientRect().width - margin.left - margin.right;
+            const height = container.node().getBoundingClientRect().height - margin.top - margin.bottom;
+
+            const svg = container.append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
+
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left},${margin.top})`);
+
+            // Create scales
+            const xScale = d3.scaleLinear()
+                .domain([0, 100])
+                .range([0, width]);
+
+            const yScale = d3.scaleLinear()
+                .domain([0, 100])
+                .range([height, 0]);
+
+            // Create axes
+            g.append('g')
+                .attr('class', 'x-axis')
+                .attr('transform', `translate(0,${height})`)
+                .call(d3.axisBottom(xScale))
+                .append('text')
+                .attr('x', width / 2)
+                .attr('y', 35)
+                .attr('fill', 'white')
+                .style('text-anchor', 'middle')
+                .text('Time (minutes)');
+
+            g.append('g')
+                .attr('class', 'y-axis')
+                .call(d3.axisLeft(yScale))
+                .append('text')
+                .attr('transform', 'rotate(-90)')
+                .attr('y', -35)
+                .attr('x', -height / 2)
+                .attr('fill', 'white')
+                .style('text-anchor', 'middle')
+                .text('Hormone Level (%)');
+
+            // Add grid lines
+            g.append('g')
+                .attr('class', 'grid')
+                .attr('transform', `translate(0,${height})`)
+                .call(d3.axisBottom(xScale)
+                    .tickSize(-height)
+                    .tickFormat('')
+                );
+
+            g.append('g')
+                .attr('class', 'grid')
+                .call(d3.axisLeft(yScale)
+                    .tickSize(-width)
+                    .tickFormat('')
+                );
+
+            // Store scales for updates
+            container.property('xScale', xScale);
+            container.property('yScale', yScale);
+            container.property('svg', g);
+        }
+
+        function initializeFeedbackChart() {
+            const container = d3.select('#feedback-chart');
+            container.selectAll('*').remove();
+
+            const margin = {top: 20, right: 30, bottom: 40, left: 50};
+            const width = container.node().getBoundingClientRect().width - margin.left - margin.right;
+            const height = container.node().getBoundingClientRect().height - margin.top - margin.bottom;
+
+            const svg = container.append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
+
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left},${margin.top})`);
+
+            // Create feedback loop visualization
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = Math.min(width, height) / 3;
+
+            // Create circular feedback loop
+            const feedbackArc = d3.arc()
+                .innerRadius(radius - 20)
+                .outerRadius(radius)
+                .startAngle(0)
+                .endAngle(2 * Math.PI);
+
+            g.append('path')
+                .datum({})
+                .attr('d', feedbackArc)
+                .attr('transform', `translate(${centerX},${centerY})`)
+                .attr('fill', 'none')
+                .attr('stroke', '#96ceb4')
+                .attr('stroke-width', 4)
+                .attr('opacity', 0.7);
+
+            // Add feedback nodes
+            const feedbackNodes = [
+                { name: 'Hypothalamus', angle: 0, color: '#ff6b6b', hormone: 'CRH' },
+                { name: 'Pituitary', angle: Math.PI * 2/3, color: '#4ecdc4', hormone: 'ACTH' },
+                { name: 'Adrenal', angle: Math.PI * 4/3, color: '#45b7d1', hormone: 'Cortisol' }
+            ];
+
+            feedbackNodes.forEach(node => {
+                const x = centerX + Math.cos(node.angle) * radius;
+                const y = centerY + Math.sin(node.angle) * radius;
+
+                const nodeGroup = g.append('g')
+                    .attr('class', 'feedback-node')
+                    .attr('transform', `translate(${x},${y})`);
+
+                nodeGroup.append('circle')
+                    .attr('r', 25)
+                    .attr('fill', node.color)
+                    .attr('stroke', 'white')
+                    .attr('stroke-width', 2);
+
+                nodeGroup.append('text')
+                    .attr('text-anchor', 'middle')
+                    .attr('dy', '0.35em')
+                    .attr('fill', 'white')
+                    .attr('font-size', '10px')
+                    .attr('font-weight', 'bold')
+                    .text(node.name);
+
+                nodeGroup.append('text')
+                    .attr('text-anchor', 'middle')
+                    .attr('dy', '2.5em')
+                    .attr('fill', 'white')
+                    .attr('font-size', '8px')
+                    .text(node.hormone);
+            });
+
+            // Add arrows showing feedback direction
+            const arrowData = [
+                { start: 0, end: Math.PI * 2/3 },
+                { start: Math.PI * 2/3, end: Math.PI * 4/3 },
+                { start: Math.PI * 4/3, end: 0 }
+            ];
+
+            arrowData.forEach((arrow, i) => {
+                const startX = centerX + Math.cos(arrow.start) * (radius - 10);
+                const startY = centerY + Math.sin(arrow.start) * (radius - 10);
+                const endX = centerX + Math.cos(arrow.end) * (radius - 10);
+                const endY = centerY + Math.sin(arrow.end) * (radius - 10);
+
+                g.append('line')
+                    .attr('x1', startX)
+                    .attr('y1', startY)
+                    .attr('x2', endX)
+                    .attr('y2', endY)
+                    .attr('stroke', '#96ceb4')
+                    .attr('stroke-width', 2)
+                    .attr('marker-end', 'url(#feedback-arrow)');
+            });
+
+            // Create arrow marker for feedback
+            svg.append('defs')
+                .append('marker')
+                .attr('id', 'feedback-arrow')
+                .attr('viewBox', '-0 -5 10 10')
+                .attr('refX', 5)
+                .attr('refY', 0)
+                .attr('orient', 'auto')
+                .attr('markerWidth', 6)
+                .attr('markerHeight', 6)
+                .append('path')
+                .attr('d', 'M 0,-5 L 10,0 L 0,5')
+                .attr('fill', '#96ceb4');
+
+            container.property('svg', g);
+            container.property('centerX', centerX);
+            container.property('centerY', centerY);
+            container.property('radius', radius);
+        }
+
+        function initializeCorrelationChart() {
+            const container = d3.select('#correlation-chart');
+            container.selectAll('*').remove();
+
+            const margin = {top: 20, right: 30, bottom: 40, left: 50};
+            const width = container.node().getBoundingClientRect().width - margin.left - margin.right;
+            const height = container.node().getBoundingClientRect().height - margin.top - margin.bottom;
+
+            const svg = container.append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom);
+
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left},${margin.top})`);
+
+            // Create correlation matrix
+            const correlationData = [
+                { x: 'Hypothalamus', y: 'CRH', value: 0.9 },
+                { x: 'Hypothalamus', y: 'ACTH', value: 0.7 },
+                { x: 'Hypothalamus', y: 'Cortisol', value: 0.5 },
+                { x: 'Stress', y: 'CRH', value: 0.8 },
+                { x: 'Stress', y: 'ACTH', value: 0.6 },
+                { x: 'Stress', y: 'Cortisol', value: 0.7 },
+                { x: 'Circadian', y: 'CRH', value: 0.6 },
+                { x: 'Circadian', y: 'ACTH', value: 0.5 },
+                { x: 'Circadian', y: 'Cortisol', value: 0.8 }
+            ];
+
+            const xLabels = ['Hypothalamus', 'Stress', 'Circadian'];
+            const yLabels = ['CRH', 'ACTH', 'Cortisol'];
+
+            const xScale = d3.scaleBand()
+                .domain(xLabels)
+                .range([0, width])
+                .padding(0.05);
+
+            const yScale = d3.scaleBand()
+                .domain(yLabels)
+                .range([0, height])
+                .padding(0.05);
+
+            const colorScale = d3.scaleSequential(d3.interpolateRdYlBu)
+                .domain([0, 1]);
+
+            // Create heatmap
+            g.selectAll('.correlation-rect')
+                .data(correlationData)
+                .enter()
+                .append('rect')
+                .attr('class', 'correlation-rect')
+                .attr('x', d => xScale(d.x))
+                .attr('y', d => yScale(d.y))
+                .attr('width', xScale.bandwidth())
+                .attr('height', yScale.bandwidth())
+                .attr('fill', d => colorScale(d.value))
+                .attr('stroke', 'white')
+                .attr('stroke-width', 1);
+
+            // Add correlation values
+            g.selectAll('.correlation-text')
+                .data(correlationData)
+                .enter()
+                .append('text')
+                .attr('class', 'correlation-text')
+                .attr('x', d => xScale(d.x) + xScale.bandwidth() / 2)
+                .attr('y', d => yScale(d.y) + yScale.bandwidth() / 2)
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.35em')
+                .attr('fill', 'white')
+                .attr('font-size', '12px')
+                .attr('font-weight', 'bold')
+                .text(d => d.value.toFixed(2));
+
+            // Add axes
+            g.append('g')
+                .attr('class', 'x-axis')
+                .attr('transform', `translate(0,${height})`)
+                .call(d3.axisBottom(xScale))
+                .selectAll('text')
+                .attr('fill', 'white');
+
+            g.append('g')
+                .attr('class', 'y-axis')
+                .call(d3.axisLeft(yScale))
+                .selectAll('text')
+                .attr('fill', 'white');
+
+            container.property('svg', g);
+            container.property('correlationData', correlationData);
+        }
+
+        function updateSystem() {
+            calculateHormoneLevels();
+            updateAnatomyVisualization();
+            updateCharts();
+            updateStatusDisplay();
+            updateHormoneBars();
+        }
+
+        function calculateHormoneLevels() {
+            // Calculate CRH based on hypothalamus activity and stress
+            currentData.crh = Math.min(100, 
+                (currentData.hypothalamus * 0.6) + 
+                (currentData.stress * 0.4) + 
+                (currentData.circadian * 0.2) +
+                (currentData.stimuli * 0.3)
+            );
+
+            // Calculate ACTH based on CRH and feedback
+            currentData.acth = Math.min(100, 
+                (currentData.crh * 0.8) - 
+                (currentData.cortisol * currentData.feedback / 100 * 0.3)
+            );
+
+            // Calculate Cortisol based on ACTH
+            currentData.cortisol = Math.min(100, 
+                (currentData.acth * 0.9) + 
+                (currentData.stress * 0.2)
+            );
+
+            // Apply feedback loop
+            const feedbackStrength = currentData.feedback / 100;
+            currentData.crh = Math.max(0, currentData.crh - (currentData.cortisol * feedbackStrength * 0.3));
+            currentData.acth = Math.max(0, currentData.acth - (currentData.cortisol * feedbackStrength * 0.4));
+        }
+
+        function updateAnatomyVisualization() {
+            const svg = d3.select('#anatomy-svg');
+            
+            // Update gland opacity based on activity
+            svg.select('.hypothalamus ellipse')
+                .transition()
+                .duration(500)
+                .attr('opacity', 0.5 + (currentData.crh / 200))
+                .attr('filter', currentData.crh > 70 ? 'url(#glow)' : 'none');
+
+            svg.select('.pituitary ellipse')
+                .transition()
+                .duration(500)
+                .attr('opacity', 0.5 + (currentData.acth / 200))
+                .attr('filter', currentData.acth > 70 ? 'url(#glow)' : 'none');
+
+            svg.selectAll('.adrenal ellipse')
+                .transition()
+                .duration(500)
+                .attr('opacity', 0.5 + (currentData.cortisol / 200))
+                .attr('filter', currentData.cortisol > 70 ? 'url(#glow)' : 'none');
+
+            // Update hormone pathway activity
+            svg.selectAll('.hormone-path')
+                .transition()
+                .duration(500)
+                .attr('stroke-width', d => 2 + (getCurrentHormoneLevel(d3.select(this).attr('class')) / 25))
+                .attr('opacity', d => 0.4 + (getCurrentHormoneLevel(d3.select(this).attr('class')) / 200));
+
+            // Add glow effect definition
+            if (svg.select('#glow').empty()) {
+                const defs = svg.select('defs').empty() ? svg.append('defs') : svg.select('defs');
+                const filter = defs.append('filter').attr('id', 'glow');
+                filter.append('feGaussianBlur').attr('stdDeviation', '3').attr('result', 'coloredBlur');
+                const feMerge = filter.append('feMerge');
+                feMerge.append('feMergeNode').attr('in', 'coloredBlur');
+                feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+            }
+        }
+
+        function getCurrentHormoneLevel(className) {
+            if (className.includes('crh')) return currentData.crh;
+            if (className.includes('acth')) return currentData.acth;
+            if (className.includes('cortisol')) return currentData.cortisol;
+            return 50;
+        }
+
+        function updateCharts() {
+            updateTimelineChart();
+            updateFeedbackChart();
+            updateCorrelationChart();
+        }
+
+        function updateTimelineChart() {
+            const container = d3.select('#timeline-chart');
+            const svg = container.property('svg');
+            const xScale = container.property('xScale');
+            const yScale = container.property('yScale');
+
+            if (!svg || !xScale || !yScale) return;
+
+            // Add current data point to timeline
+            timelineData.push({
+                time: time,
+                crh: currentData.crh,
+                acth: currentData.acth,
+                cortisol: currentData.cortisol
+            });
+
+            // Keep only last 100 data points
+            if (timelineData.length > 100) {
+                timelineData.shift();
+            }
+
+            // Update x scale domain
+            if (timelineData.length > 0) {
+                xScale.domain([timelineData[0].time, timelineData[timelineData.length - 1].time]);
+            }
+
+            // Create line generators
+            const crhLine = d3.line()
+                .x(d => xScale(d.time))
+                .y(d => yScale(d.crh))
+                .curve(d3.curveMonotoneX);
+
+            const acthLine = d3.line()
+                .x(d => xScale(d.time))
+                .y(d => yScale(d.acth))
+                .curve(d3.curveMonotoneX);
+
+            const cortisolLine = d3.line()
+                .x(d => xScale(d.time))
+                .y(d => yScale(d.cortisol))
+                .curve(d3.curveMonotoneX);
+
+            // Update or create lines
+            svg.selectAll('.timeline-line').remove();
+
+            svg.append('path')
+                .datum(timelineData)
+                .attr('class', 'timeline-line crh-line')
+                .attr('fill', 'none')
+                .attr('stroke', '#ff6b6b')
+                .attr('stroke-width', 2)
+                .attr('d', crhLine);
+
+            svg.append('path')
+                .datum(timelineData)
+                .attr('class', 'timeline-line acth-line')
+                .attr('fill', 'none')
+                .attr('stroke', '#4ecdc4')
+                .attr('stroke-width', 2)
+                .attr('d', acthLine);
+
+            svg.append('path')
+                .datum(timelineData)
+                .attr('class', 'timeline-line cortisol-line')
+                .attr('fill', 'none')
+                .attr('stroke', '#45b7d1')
+                .attr('stroke-width', 2)
+                .attr('d', cortisolLine);
+
+            // Update axes
+            svg.select('.x-axis')
+                .transition()
+                .duration(500)
+                .call(d3.axisBottom(xScale));
+        }
+
+        function updateFeedbackChart() {
+            const container = d3.select('#feedback-chart');
+            const svg = container.property('svg');
+            const centerX = container.property('centerX');
+            const centerY = container.property('centerY');
+            const radius = container.property('radius');
+
+            if (!svg) return;
+
+            // Update feedback node sizes based on hormone levels
+            const hormoneData = [
+                { hormone: 'CRH', level: currentData.crh, color: '#ff6b6b' },
+                { hormone: 'ACTH', level: currentData.acth, color: '#4ecdc4' },
+                { hormone: 'Cortisol', level: currentData.cortisol, color: '#45b7d1' }
+            ];
+
+            svg.selectAll('.feedback-node circle')
+                .data(hormoneData)
+                .transition()
+                .duration(500)
+                .attr('r', d => 20 + (d.level / 100) * 15)
+                .attr('opacity', d => 0.6 + (d.level / 100) * 0.4);
+
+            // Update feedback strength visualization
+            const feedbackStrength = currentData.feedback / 100;
+            svg.selectAll('line')
+                .transition()
+                .duration(500)
+                .attr('stroke-width', 2 + feedbackStrength * 3)
+                .attr('opacity', 0.5 + feedbackStrength * 0.5);
+        }
+
+        function updateCorrelationChart() {
+            const container = d3.select('#correlation-chart');
+            const svg = container.property('svg');
+            const correlationData = container.property('correlationData');
+
+            if (!svg || !correlationData) return;
+
+            // Recalculate correlations based on current state
+            const updatedCorrelations = correlationData.map(d => {
+                let newValue = d.value;
+                
+                // Dynamic correlation calculation based on current system state
+                if (d.x === 'Hypothalamus' && d.y === 'CRH') {
+                    newValue = 0.7 + (currentData.hypothalamus / 100) * 0.3;
+                } else if (d.x === 'Stress' && d.y === 'Cortisol') {
+                    newValue = 0.5 + (currentData.stress / 100) * 0.4;
+                } else if (d.x === 'Circadian' && d.y === 'Cortisol') {
+                    newValue = 0.6 + (currentData.circadian / 100) * 0.3;
+                }
+
+                return { ...d, value: newValue };
+            });
+
+            const colorScale = d3.scaleSequential(d3.interpolateRdYlBu)
+                .domain([0, 1]);
+
+            svg.selectAll('.correlation-rect')
+                .data(updatedCorrelations)
+                .transition()
+                .duration(500)
+                .attr('fill', d => colorScale(d.value));
+
+            svg.selectAll('.correlation-text')
+                .data(updatedCorrelations)
+                .transition()
+                .duration(500)
+                .text(d => d.value.toFixed(2));
+        }
+
+        function updateStatusDisplay() {
+            // Update hormone level indicators
+            document.getElementById('crh-level').textContent = getHormoneStatus(currentData.crh);
+            document.getElementById('acth-level').textContent = getHormoneStatus(currentData.acth);
+            document.getElementById('cortisol-level').textContent = getHormoneStatus(currentData.cortisol);
+
+            // Update feedback status
+            const feedbackStatus = getFeedbackStatus();
+            document.getElementById('feedback-status').textContent = feedbackStatus;
+            document.getElementById('feedback-text').textContent = feedbackStatus + ' Feedback Loop';
+
+            // Update feedback arrow animation
+            const feedbackArrow = document.querySelector('.feedback-arrow');
+            if (currentData.feedback > 70) {
+                feedbackArrow.style.animation = 'spin 2s linear infinite';
+            } else {
+                feedbackArrow.style.animation = 'none';
+            }
+        }
+
+        function getHormoneStatus(level) {
+            if (level < 30) return 'Low';
+            if (level < 70) return 'Normal';
+            return 'High';
+        }
+
+        function getFeedbackStatus() {
+            const feedback = currentData.feedback;
+            if (feedback < 30) return 'Weak';
+            if (feedback < 70) return 'Stable';
+            return 'Strong';
+        }
+
+        function updateHormoneBars() {
+            document.getElementById('crh-bar').style.width = currentData.crh + '%';
+            document.getElementById('acth-bar').style.width = currentData.acth + '%';
+            document.getElementById('cortisol-bar').style.width = currentData.cortisol + '%';
+        }
+
+        function addGlandTooltips(svg) {
+            const tooltip = d3.select('#tooltip');
+
+            svg.selectAll('.gland')
+                .on('mouseover', function(event, d) {
+                    const glandClass = d3.select(this).attr('class');
+                    let tooltipContent = '';
+
+                    if (glandClass.includes('hypothalamus')) {
+                        tooltipContent = `<strong>Hypothalamus</strong><br>
+                            CRH Production: ${currentData.crh.toFixed(1)}%<br>
+                            Activity: ${currentData.hypothalamus}%<br>
+                            Function: Controls hormone release`;
+                    } else if (glandClass.includes('pituitary')) {
+                        tooltipContent = `<strong>Pituitary Gland</strong><br>
+                            ACTH Production: ${currentData.acth.toFixed(1)}%<br>
+                            Function: Master endocrine gland`;
+                    } else if (glandClass.includes('adrenal')) {
+                        tooltipContent = `<strong>Adrenal Gland</strong><br>
+                            Cortisol Production: ${currentData.cortisol.toFixed(1)}%<br>
+                            Function: Stress response`;
+                    }
+
+                    tooltip.html(tooltipContent)
+                        .style('opacity', 1)
+                        .style('left', (event.pageX + 10) + 'px')
+                        .style('top', (event.pageY - 10) + 'px');
+                })
+                .on('mouseout', function() {
+                    tooltip.style('opacity', 0);
+                });
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+
+            // Reinitialize charts if needed
+            if (tabName !== 'anatomy') {
+                setTimeout(() => {
+                    if (tabName === 'timeline') initializeTimelineChart();
+                    if (tabName === 'feedback') initializeFeedbackChart();
+                    if (tabName === 'correlation') initializeCorrelationChart();
+                }, 100);
+            }
+        }
+
+        function resetSystem() {
+            // Reset all sliders to default values
+            currentData = {
+                hypothalamus: 50,
+                stress: 25,
+                circadian: 60,
+                feedback: 75,
+                stimuli: 40,
+                crh: 50,
+                acth: 45,
+                cortisol: 40
+            };
+
+            // Update slider positions
+            document.getElementById('hypothalamus-slider').value = 50;
+            document.getElementById('stress-slider').value = 25;
+            document.getElementById('circadian-slider').value = 60;
+            document.getElementById('feedback-slider').value = 75;
+            document.getElementById('stimuli-slider').value = 40;
+
+            // Update displays
+            document.getElementById('hypothalamus-value').textContent = '50%';
+            document.getElementById('stress-value').textContent = '25%';
+            document.getElementById('circadian-value').textContent = '60%';
+            document.getElementById('feedback-value').textContent = '75%';
+            document.getElementById('stimuli-value').textContent = '40%';
+
+            // Clear timeline data
+            timelineData = [];
+            time = 0;
+
+            // Update system
+            updateSystem();
+        }
+
+        function generateInitialData() {
+            // Generate some initial timeline data
+            for (let i = 0; i < 20; i++) {
+                timelineData.push({
+                    time: i,
+                    crh: 45 + Math.random() * 10,
+                    acth: 40 + Math.random() * 10,
+                    cortisol: 35 + Math.random() * 10
+                });
+            }
+            time = 20;
+        }
+
+        function startAnimation() {
+            function animate() {
+                time += 0.1;
+                
+                // Update particle system
+                const svg = d3.select('#anatomy-svg');
+                const width = svg.node().getBoundingClientRect().width;
+                const height = svg.node().getBoundingClientRect().height;
+                
+                updateParticles(svg, width, height);
+
+                // Add slight random variations to make it more dynamic
+                if (Math.random() < 0.05) {
+                    const variation = (Math.random() - 0.5) * 2;
+                    currentData.crh = Math.max(0, Math.min(100, currentData.crh + variation));
+                    currentData.acth = Math.max(0, Math.min(100, currentData.acth + variation));
+                    currentData.cortisol = Math.max(0, Math.min(100, currentData.cortisol + variation));
+                    
+                    updateHormoneBars();
+                    updateStatusDisplay();
+                }
+
+                // Update timeline every second
+                if (Math.floor(time) % 1 === 0 && time > Math.floor(time) - 0.05) {
+                    updateTimelineChart();
+                }
+
+                animationId = requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        // Add CSS animation for spinning feedback arrow
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            setTimeout(() => {
+                initializeCharts();
+                updateSystem();
+            }, 100);
+        });
+    </script>
+</body>
+</html>
